@@ -28,7 +28,12 @@ namespace Common.Services
                     json = await reader.ReadToEndAsync().ConfigureAwait(false);
                 }
 
-                return JsonSerializer.Deserialize<T>(json)!;
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                return JsonSerializer.Deserialize<T>(json, options)!;
             }
             catch (JsonException ex)
             {

@@ -34,7 +34,7 @@ namespace Persona.Services.CrearPersona
 
                 string traceId = httpContext.TraceIdentifier;
 
-                CrearPersonaRequestModel? requestModel = await _jsonService.RequestToObjectAsync<CrearPersonaRequestModel>(httpContext);
+                CrearPersonaRequestModel requestModel = await _jsonService.RequestToObjectAsync<CrearPersonaRequestModel>(httpContext);
 
                 _validationService.Validate(requestModel, traceId);
 
@@ -51,7 +51,7 @@ namespace Persona.Services.CrearPersona
                     if (existePersona)
                     {
                         _logger.LogError(string.Format("{0} - Ya existe un registro con la cédula '{1}'", traceId, requestModel.CedulaAsegurado));
-                        throw new BPSegurosException((int)HttpStatusCode.Conflict, "La persona ya existe con el número de identificación.");
+                        throw new BPSegurosException((int)HttpStatusCode.Conflict, "La persona que desea guardar ya existe.");
                     }
 
                     PersonaEntity personaEntity = new()
@@ -88,7 +88,7 @@ namespace Persona.Services.CrearPersona
                         }
                     }
 
-                    IActionResult actionResult = new CreatedResult("/persona/crear/" + personaEntity.CedulaAsegurado, null);
+                    IActionResult actionResult = new CreatedResult("/persona/" + personaEntity.CedulaAsegurado, null);
                     return actionResult;
                 }
             }

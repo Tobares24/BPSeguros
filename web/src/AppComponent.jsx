@@ -1,9 +1,10 @@
-import { SelectorComponent } from "./components/SelectorComponent";
+import { TablaComponent } from "./components/TablaComponent";
+import { PersonaComponent } from "./Persona/components/PersonaComponent";
 
 export const AppComponent = () => {
   return (
     <>
-      <SelectorComponent />
+      <PersonaComponent />
     </>
   );
 };

@@ -3,24 +3,24 @@ using Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persona.Entities;
-using Persona.Models.ListaSelectorPersona;
+using Persona.Models.ListaSelectorTipoPersona;
 using System.Net;
 using System.Reflection;
 
-namespace Persona.Services.ListaSelectorPersona
+namespace Persona.Services.ListaSelectorTipoPersona
 {
-    public class ListaSelectorPersonaService
+    public class ListaSelectorTipoPersonaService
     {
-        private readonly ILogger<ListaSelectorPersonaService> _logger;
+        private readonly ILogger<ListaSelectorTipoPersonaService> _logger;
         private readonly DbContextFactoryService _dbContextFactoryService;
 
-        public ListaSelectorPersonaService(ILogger<ListaSelectorPersonaService> logger, DbContextFactoryService dbContextFactoryService)
+        public ListaSelectorTipoPersonaService(ILogger<ListaSelectorTipoPersonaService> logger, DbContextFactoryService dbContextFactoryService)
         {
             _logger = logger;
             _dbContextFactoryService = dbContextFactoryService;
         }
 
-        public async Task<IActionResult> ListaSelectorPersona(HttpContext httpContext)
+        public async Task<IActionResult> ListaSelectorTipoPersona(HttpContext httpContext)
         {
             try
             {
@@ -30,27 +30,20 @@ namespace Persona.Services.ListaSelectorPersona
 
                 string? filtro = httpContext.Request.Query["filtro"];
 
-                List<ListaSelectorPersonaResponseModel> registros = new();
+                List<ListaSelectorTipoPersonaResponseModel> registros = new();
 
                 using (var dbContext = _dbContextFactoryService.CreateDbContext<PersonaDbContext>())
                 {
-                    var query = dbContext.Persona.Where(x => !x.EstaEliminado);
+                    var query = dbContext.TipoPersona.Where(x => !x.EstaEliminado);
 
-                    query = !string.IsNullOrEmpty(filtro) ? query.Where(x =>
-                                (x.Nombre != null && x.Nombre.StartsWith(filtro)) ||
-                                (x.PrimerApellido != null && x.PrimerApellido.StartsWith(filtro)) ||
-                                (x.SegundoApellido != null && x.SegundoApellido.StartsWith(filtro)) ||
-                                (x.CedulaAsegurado != null && x.CedulaAsegurado.StartsWith(filtro)))
-                        : query;
+                    query = !string.IsNullOrEmpty(filtro) ? query.Where(x => (x.TipoPersona != null && x.TipoPersona.StartsWith(filtro))) : query;
 
                     registros = await query
                          .Take(10)
-                         .Select(x => new ListaSelectorPersonaResponseModel
+                         .Select(x => new ListaSelectorTipoPersonaResponseModel
                          {
-                             CedulaAsegurado = x.CedulaAsegurado,
-                             SegundoApellido = x.SegundoApellido,
-                             PrimerApellido = x.PrimerApellido,
-                             Nombre = x.Nombre,
+                             Id = x.Id,
+                             TipoPersona = x.TipoPersona,
                          }).ToListAsync();
                 }
 
@@ -74,7 +67,7 @@ namespace Persona.Services.ListaSelectorPersona
             }
             catch (Exception ex)
             {
-                BPSegurosException argosEx = new BPSegurosException((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error al obtener las personas del selector.", ex);
+                BPSegurosException argosEx = new BPSegurosException((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error al obtener los tipos de personas del selector.", ex);
                 _logger.LogError(string.Format("{0} - Exception: {1}", httpContext.TraceIdentifier, argosEx.ToString()));
                 return new ObjectResult(new ErrorResponseModel
                 {

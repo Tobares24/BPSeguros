@@ -107,8 +107,7 @@ namespace Persona.Migrations
                     b.HasKey("Id")
                         .HasName("PK_TipoPersona_Id");
 
-                    b.HasIndex(new[] { "Id" }, "TipoPersonaIndex")
-                        .IsUnique();
+                    b.HasIndex(new[] { "TipoPersona" }, "TipoPersonaBusquedaIndex");
 
                     b.ToTable("TipoPersonaTable", "Persona");
                 });

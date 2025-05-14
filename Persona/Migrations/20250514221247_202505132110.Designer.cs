@@ -12,7 +12,7 @@ using Persona.Entities;
 namespace Persona.Migrations
 {
     [DbContext(typeof(PersonaDbContext))]
-    [Migration("20250514044713_202505132110")]
+    [Migration("20250514221247_202505132110")]
     partial class _202505132110
     {
         /// <inheritdoc />
@@ -110,8 +110,7 @@ namespace Persona.Migrations
                     b.HasKey("Id")
                         .HasName("PK_TipoPersona_Id");
 
-                    b.HasIndex(new[] { "Id" }, "TipoPersonaIndex")
-                        .IsUnique();
+                    b.HasIndex(new[] { "TipoPersona" }, "TipoPersonaBusquedaIndex");
 
                     b.ToTable("TipoPersonaTable", "Persona");
                 });

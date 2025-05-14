@@ -65,13 +65,6 @@ namespace Persona.Migrations
                 column: "IdTipoPersona");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PersonaTable_IdTipoPersona",
-                schema: "Persona",
-                table: "PersonaTable",
-                column: "IdTipoPersona",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "NombreIndex",
                 schema: "Persona",
                 table: "PersonaTable",
@@ -97,11 +90,10 @@ namespace Persona.Migrations
                 column: "SegundoApellido");
 
             migrationBuilder.CreateIndex(
-                name: "TipoPersonaIndex",
+                name: "TipoPersonaBusquedaIndex",
                 schema: "Persona",
                 table: "TipoPersonaTable",
-                column: "Id",
-                unique: true);
+                column: "TipoPersona");
         }
 
         /// <inheritdoc />

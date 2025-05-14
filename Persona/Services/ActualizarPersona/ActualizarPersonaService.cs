@@ -41,7 +41,7 @@ namespace Persona.Services.ActualizarPersona
                 string cedula = httpContext.Request.RouteValues["cedula"]!.ToString()!;
                 _logger.LogInformation(string.Format("{0} - El parámetro cedula tiene el siguiente valor: '{1}'", httpContext.TraceIdentifier, cedula));
 
-                ActualizarPersonaRequestModel? requestModel = await _jsonService.RequestToObjectAsync<ActualizarPersonaRequestModel>(httpContext);
+                ActualizarPersonaRequestModel requestModel = await _jsonService.RequestToObjectAsync<ActualizarPersonaRequestModel>(httpContext);
 
                 using (var dbContext = _dbContextFactoryService.CreateDbContext<PersonaDbContext>())
                 {

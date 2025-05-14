@@ -8,15 +8,15 @@ namespace Persona.Models.CrearPersona
         public string? CedulaAsegurado { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
-        [RegularExpression(@"^[a-zA-Z\s]{1,512}$", ErrorMessage = "El nombre solo puede contener letras y espacios, con una longitud de entre 1 y 512 caracteres.")]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,512}$", ErrorMessage = "El nombre solo puede contener letras y espacios, con una longitud de entre 1 y 512 caracteres.")]
         public string? Nombre { get; set; }
 
         [Required(ErrorMessage = "El primer apellido es obligatorio.")]
-        [RegularExpression(@"^[a-zA-Z\s]{1,128}$", ErrorMessage = "El primer apellido solo puede contener letras y espacios, con una longitud de entre 1 y 128 caracteres.")]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,128}$", ErrorMessage = "El primer apellido solo puede contener letras y espacios, con una longitud de entre 1 y 128 caracteres.")]
         public string? PrimerApellido { get; set; }
 
         [Required(ErrorMessage = "El segundo apellido es obligatorio.")]
-        [RegularExpression(@"^[a-zA-Z\s]{1,128}$", ErrorMessage = "El segundo apellido solo puede contener letras y espacios, con una longitud de entre 1 y 128 caracteres.")]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,128}$", ErrorMessage = "El segundo apellido solo puede contener letras y espacios, con una longitud de entre 1 y 128 caracteres.")]
         public string? SegundoApellido { get; set; }
 
         [Required(ErrorMessage = "El identificador de tipo persona es obligatorio.")]

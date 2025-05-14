@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Persona.Entities;
 using Persona.Services.ActualizarPersona;
 using Persona.Services.CrearPersona;
+using Persona.Services.DataInicial;
 using Persona.Services.EliminarPersona;
 using Persona.Services.ListaSelectorPersona;
+using Persona.Services.ListaSelectorTipoPersona;
 using Persona.Services.ObtenerPersona;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,11 +26,24 @@ builder.Services.AddTransient<ObtenerPersonaService>();
 builder.Services.AddTransient<EliminarPersonaService>();
 builder.Services.AddTransient<ActualizarPersonaService>();
 builder.Services.AddTransient<ListaSelectorPersonaService>();
+builder.Services.AddTransient<ListaSelectorTipoPersonaService>();
+builder.Services.AddTransient<DataInicialService>();
 builder.Services.AddDbContext<PersonaDbContext>(options =>
 {
     SqlConnection sqlConnection = new();
     sqlConnection.ConnectionString = Environment.GetEnvironmentVariable("SQL_SERVER_CONNECTION_STRING") ?? "Server=localhost;Database=PersonaDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
     options.UseSqlServer(sqlConnection);
+});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("*", policy =>
+    {
+        policy
+            .SetIsOriginAllowed(origin => true)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
 });
 
 var app = builder.Build();
@@ -39,17 +54,15 @@ using (var dbContext = app.Services.GetRequiredService<DbContextFactoryService>(
     await dbContext.Database.MigrateAsync();
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseHttpsRedirection();
-
+app.UseCors("*");
 app.UseAuthorization();
-
 app.MapControllers();
+
+_=Task.Run(async () =>
+{
+    DataInicialService service = app.Services.GetService<DataInicialService>()!;
+    await service.CrearTipoPersonas();
+});
 
 app.Run();

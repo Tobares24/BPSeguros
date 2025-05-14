@@ -31,8 +31,6 @@ namespace Persona.Services.ObtenerPersona
 
                 string traceId = httpContext.TraceIdentifier;
 
-                ObtenerPersonaRequestModel? requestModel = await _jsonService.RequestToObjectAsync<ObtenerPersonaRequestModel>(httpContext);
-
                 ObtenerPersonaResponseModel responseModel = new()
                 {
                     Registros = new(),
@@ -40,22 +38,33 @@ namespace Persona.Services.ObtenerPersona
 
                 List<PersonaEntity> registros = new();
 
+                string? nombre = httpContext.Request.RouteValues["nombre"]?.ToString();
+                string? cedulaAsegurado = httpContext.Request.RouteValues["cedulaAsegurado"]?.ToString();
+                string? primerApellido = httpContext.Request.RouteValues["primerApellido"]?.ToString();
+                string? segundoApellido = httpContext.Request.RouteValues["segundoApellido"]?.ToString();
+                string? idTipoPersona = httpContext.Request.RouteValues["idTipoPersona"]?.ToString();
+                string? paginaActualParams = httpContext.Request.RouteValues["paginaActual"]?.ToString();
+                string? cantidadRegistrosParams = httpContext.Request.RouteValues["cantidadRegistros"]?.ToString();
+
+                int paginaActual = int.Parse(paginaActualParams ?? "1");
+                int cantidadRegistros = int.Parse(cantidadRegistrosParams ?? "10");
+
                 using (var dbContext = _dbContextFactoryService.CreateDbContext<PersonaDbContext>())
                 {
                     var query = dbContext.Persona.Include(x => x.TipoPersona).Where(x => !x.EstaEliminado && x.TipoPersona != null);
 
-                    query = !string.IsNullOrEmpty(requestModel.Nombre) ? query.Where(x => x.Nombre!.ToLower().StartsWith(requestModel.Nombre)) : query;
-                    query = !string.IsNullOrEmpty(requestModel.CedulaAsegurado) ? query.Where(x => x.CedulaAsegurado!.ToLower().StartsWith(requestModel.CedulaAsegurado)) : query;
-                    query = !string.IsNullOrEmpty(requestModel.PrimerApellido) ? query.Where(x => x.PrimerApellido!.ToLower().StartsWith(requestModel.PrimerApellido)) : query;
-                    query = !string.IsNullOrEmpty(requestModel.SegundoApellido) ? query.Where(x => x.SegundoApellido!.ToLower().StartsWith(requestModel.SegundoApellido)) : query;
-                    query = requestModel.IdTipoPersona is not null ? query.Where(x => x.IdTipoPersona == requestModel.IdTipoPersona) : query;
+                    query = !string.IsNullOrEmpty(nombre) ? query.Where(x => x.Nombre!.ToLower().StartsWith(nombre)) : query;
+                    query = !string.IsNullOrEmpty(cedulaAsegurado) ? query.Where(x => x.CedulaAsegurado!.ToLower().StartsWith(cedulaAsegurado)) : query;
+                    query = !string.IsNullOrEmpty(primerApellido) ? query.Where(x => x.PrimerApellido!.ToLower().StartsWith(primerApellido)) : query;
+                    query = !string.IsNullOrEmpty(segundoApellido) ? query.Where(x => x.SegundoApellido!.ToLower().StartsWith(segundoApellido)) : query;
+                    query = idTipoPersona is not null ? query.Where(x => x.IdTipoPersona == Guid.Parse(idTipoPersona)) : query;
 
                     responseModel.CantidadRegistrosPaginas = await query.CountAsync();
-                    responseModel.CantidadPaginas = (int)Math.Ceiling((decimal)responseModel.CantidadRegistrosPaginas / (decimal)requestModel.CantidadRegistros);
+                    responseModel.CantidadPaginas = (int)Math.Ceiling((decimal)responseModel.CantidadRegistrosPaginas / (decimal)cantidadRegistros);
 
                     registros = await query
-                         .Skip((requestModel.PaginaActual - 1) * requestModel.CantidadRegistros)
-                         .Take(requestModel.CantidadRegistros)
+                         .Skip((paginaActual - 1) * cantidadRegistros)
+                         .Take(cantidadRegistros)
                          .ToListAsync();
                 }
 
@@ -71,7 +80,7 @@ namespace Persona.Services.ObtenerPersona
                         TipoPersona = persona.TipoPersona?.TipoPersona,
                     }).ToList();
 
-                    responseModel.PaginaActual = requestModel.PaginaActual;
+                    responseModel.PaginaActual = paginaActual;
                     responseModel.CantidadRegistros = responseModel.Registros.Count();
                 }
 
