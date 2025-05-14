@@ -1,19 +1,26 @@
+using Common.Services;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Poliza.Entities;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+builder.Services.AddLogging();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<DbContextFactoryService>();
+builder.Services.AddDbContext<PolizaDbContext>(options =>
+{
+    SqlConnection sqlConnection = new SqlConnection();
+    sqlConnection.ConnectionString = Environment.GetEnvironmentVariable("SQL_SERVER_CONNECTION_STRING") ?? "Server=localhost;Database=PolizaDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+    options.UseSqlServer(sqlConnection);
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var dbContext = app.Services.GetRequiredService<DbContextFactoryService>().CreateDbContext<PolizaDbContext>())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    await dbContext.Database.EnsureCreatedAsync();
+    await dbContext.Database.MigrateAsync();
 }
 
 app.UseHttpsRedirection();
