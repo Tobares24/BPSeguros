@@ -1,0 +1,6 @@
+@Poliza_HostAddress = http://localhost:5204
+
+GET {{Poliza_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
