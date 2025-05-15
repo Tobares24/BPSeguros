@@ -14,8 +14,8 @@ export const SelectorPersonaComponent = ({
   deshabilitar = false,
 }) => {
   const [cargando, setCargando] = useState(false);
-  const [personas, setPersonas] = useState([]);
   const [filtro, setFiltro] = useState(valorSeleccionado);
+  const [personas, setPersonas] = useState([]);
 
   const personaService = new PersonaService();
 
@@ -73,19 +73,13 @@ export const SelectorPersonaComponent = ({
     buscarPersonas();
   }, [filtro]);
 
-  useEffect(() => {
-    if (valorSeleccionado) {
-      setFiltro(valorSeleccionado === "null" ? "" : valorSeleccionado);
-    }
-  }, [valorSeleccionado]);
-
   return (
     <div>
       <SelectorComponent
         options={personas}
         loading={cargando}
         onSearch={setFiltro}
-        value={filtro}
+        value={filtro || valorSeleccionado}
         onSelect={handleSelect}
         placeholder="Buscar"
         label={label}

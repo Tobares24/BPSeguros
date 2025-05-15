@@ -7,6 +7,7 @@ using Poliza.Services.DataInicial;
 using Poliza.Services.ListaSelectorPolizaCobertura;
 using Poliza.Services.ListaSelectorPolizaEstado;
 using Poliza.Services.ListaSelectorTipoPoliza;
+using Poliza.Services.ObtenerPoliza;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddSingleton<ListaSelectorTipoPolizaService>();
 builder.Services.AddSingleton<ListaSelectorPolizaCoberturaService>();
 builder.Services.AddSingleton<ListaSelectorPolizaEstadoService>();
 builder.Services.AddTransient<CrearPolizaService>();
+builder.Services.AddTransient<ObtenerPolizaService>();
 builder.Services.AddDbContext<PolizaDbContext>(options =>
 {
     SqlConnection sqlConnection = new SqlConnection();

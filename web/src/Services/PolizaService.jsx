@@ -23,6 +23,42 @@ export default class PolizaService {
     }
   }
 
+  async obtener({
+    registroPorPagina,
+    cedulaAsegurado,
+    numeroPoliza,
+    fechaVencimiento,
+    paginaActual,
+    idTipoPoliza,
+  }) {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const params = new URLSearchParams();
+
+      params.append("fechaVencimiento", fechaVencimiento);
+      params.append("cedulaAsegurado", cedulaAsegurado);
+      params.append("idTipoPoliza", idTipoPoliza);
+      params.append("numeroPoliza", numeroPoliza);
+      params.append("paginaActual", paginaActual);
+      params.append("registroPorPagina", registroPorPagina);
+
+      const response = await fetch(`${API_POLIZA}?${params.toString()}`, {
+        method: "GET",
+        credentials: "include",
+        headers,
+      });
+
+      const responseObject = await ResponseService.handle(response);
+      return responseObject;
+    } catch (error) {
+      AlertaService.error("¡Error!", `${error?.message}`);
+      throw error;
+    }
+  }
+
   async listaSelectorTipoPoliza(filtroBusqueda) {
     try {
       const headers = {

@@ -25,7 +25,7 @@ namespace Poliza.Services
             _dbContextFactoryService = dbContextFactoryService;
             _jsonService = jsonService;
             _validationService = validationService;
-            _internalService=internalService;
+            _internalService = internalService;
         }
 
         public async Task<IActionResult> CrearPoliza(HttpContext httpContext)

@@ -3,22 +3,26 @@ using Common.Models;
 using Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Persona.Entities;
-using Persona.Models.ObtenerPersona;
+using Poliza.Entities;
+using Poliza.Models.ObtenerPoliza;
 using System.Net;
 using System.Reflection;
 
-namespace Persona.Services.ObtenerPersona
+namespace Poliza.Services.ObtenerPoliza
 {
-    public class ObtenerPersonaService
+    public class ObtenerPolizaService
     {
-        private readonly ILogger<ObtenerPersonaService> _logger;
+        private readonly ILogger<ObtenerPolizaService> _logger;
         private readonly DbContextFactoryService _dbContextFactoryService;
+        private readonly InternalService _internalService;
+        private readonly JsonService _jsonService;
 
-        public ObtenerPersonaService(ILogger<ObtenerPersonaService> logger, DbContextFactoryService dbContextFactoryService)
+        public ObtenerPolizaService(ILogger<ObtenerPolizaService> logger, DbContextFactoryService dbContextFactoryService, InternalService internalService, JsonService jsonService)
         {
             _logger = logger;
             _dbContextFactoryService = dbContextFactoryService;
+            _internalService = internalService;
+            _jsonService = jsonService;
         }
 
         public async Task<IActionResult> Obtener(HttpContext httpContext)
@@ -29,33 +33,35 @@ namespace Persona.Services.ObtenerPersona
 
                 string traceId = httpContext.TraceIdentifier;
 
-                ObtenerPersonaResponseModel responseModel = new()
+                ObtenerPolizaResponseModel responseModel = new()
                 {
                     Registros = new(),
                 };
 
-                List<PersonaEntity> registros = new();
+                List<PolizaEntity> registros = new();
 
-                string? nombre = httpContext.Request.Query["nombre"];
+                string? numeroPoliza = httpContext.Request.Query["numeroPoliza"];
                 string? cedulaAsegurado = httpContext.Request.Query["cedulaAsegurado"];
-                string? primerApellido = httpContext.Request.Query["primerApellido"];
-                string? segundoApellido = httpContext.Request.Query["segundoApellido"];
-                string? idTipoPersona = httpContext.Request.Query["idTipoPersona"];
+                string? fechaVencimiento = httpContext.Request.Query["fechaVencimiento"];
+                string? idTipoPoliza = httpContext.Request.Query["idTipoPoliza"];
                 string? paginaActualParams = httpContext.Request.Query["paginaActual"];
                 string? registroPorPaginaParams = httpContext.Request.Query["registroPorPagina"];
 
                 int paginaActual = int.Parse(paginaActualParams ?? "1");
                 int registroPorPagina = int.Parse(registroPorPaginaParams ?? "10");
 
-                using (var dbContext = _dbContextFactoryService.CreateDbContext<PersonaDbContext>())
+                using (var dbContext = _dbContextFactoryService.CreateDbContext<PolizaDbContext>())
                 {
-                    var query = dbContext.Persona.Include(x => x.TipoPersona).Where(x => !x.EstaEliminado && x.TipoPersona != null);
+                    var query = dbContext.Poliza.Include(x => x.TipoPoliza).Include(x => x.PolizaEstado).Where(x => !x.EstaEliminado && x.TipoPoliza != null && x.PolizaEstado != null);
 
-                    query = !string.IsNullOrEmpty(nombre) ? query.Where(x => x.Nombre!.ToLower().StartsWith(nombre)) : query;
+                    query = !string.IsNullOrEmpty(numeroPoliza) ? query.Where(x => x.NumeroPoliza!.ToLower().StartsWith(numeroPoliza)) : query;
                     query = !string.IsNullOrEmpty(cedulaAsegurado) ? query.Where(x => x.CedulaAsegurado!.ToLower().StartsWith(cedulaAsegurado)) : query;
-                    query = !string.IsNullOrEmpty(primerApellido) ? query.Where(x => x.PrimerApellido!.ToLower().StartsWith(primerApellido)) : query;
-                    query = !string.IsNullOrEmpty(segundoApellido) ? query.Where(x => x.SegundoApellido!.ToLower().StartsWith(segundoApellido)) : query;
-                    query = !string.IsNullOrEmpty(idTipoPersona) ? query.Where(x => x.IdTipoPersona == Guid.Parse(idTipoPersona)) : query;
+                    if (DateTime.TryParse(fechaVencimiento, out var fecha))
+                    {
+                        query = query.Where(x => x.FechaVencimiento.Date == fecha.Date);
+                    }
+
+                    query = !string.IsNullOrEmpty(idTipoPoliza) ? query.Where(x => x.IdTipoPoliza == Guid.Parse(idTipoPoliza)) : query;
 
                     responseModel.CantidadRegistrosPaginas = await query.CountAsync();
                     responseModel.CantidadPaginas = (int)Math.Ceiling((decimal)responseModel.CantidadRegistrosPaginas / (decimal)registroPorPagina);
@@ -68,14 +74,34 @@ namespace Persona.Services.ObtenerPersona
 
                 if (registros.Any())
                 {
-                    responseModel.Registros = registros.Select(persona => new PersonaModel
+                    List<Task<object?>> tareas = new();
+                    foreach (var item in registros)
                     {
-                        CedulaAsegurado = persona.CedulaAsegurado,
-                        FechaNacimiento = persona.FechaNacimiento,
-                        Nombre = persona.Nombre,
-                        PrimerApellido = persona.PrimerApellido,
-                        SegundoApellido = persona.SegundoApellido,
-                        TipoPersona = persona.TipoPersona?.TipoPersona,
+                        tareas.Add(_internalService.GetEntityById<object>(httpContext.TraceIdentifier, "api/personas", item.CedulaAsegurado!, "persona"));
+                    }
+
+                    var listaPersonasObtenidas = await Task.WhenAll(tareas);
+
+                    List<ObtenerPorIdResponseModel> obtenerPorIdResponseModels = new();
+                    foreach (var personaResponseJson in listaPersonasObtenidas)
+                    {
+                        ObtenerPorIdResponseModel personaObtenida = _jsonService.ConvertToObject<ObtenerPorIdResponseModel>(personaResponseJson!.ToString()!);
+                        obtenerPorIdResponseModels.Add(personaObtenida);
+                    }
+
+                    responseModel.Registros = registros.Select(poliza =>
+                    {
+                        var personaObtenida = obtenerPorIdResponseModels.FirstOrDefault(x => x.CedulaAsegurado == poliza.CedulaAsegurado);
+                        return new ObtenerPolizaModel
+                        {
+                            CedulaAsegurado = poliza.CedulaAsegurado,
+                            FechaVencimiento = poliza.FechaVencimiento,
+                            NombreCompleto = $"{personaObtenida?.Nombre ?? ""} {personaObtenida?.PrimerApellido ?? ""} {personaObtenida?.SegundoApellido ?? ""}",
+                            Id = poliza.Id,
+                            NumeroPoliza = poliza.NumeroPoliza,
+                            TipoPoliza = poliza.TipoPoliza?.Descripcion,
+                            PolizaEstado = poliza.PolizaEstado?.Descripcion,
+                        };
                     }).ToList();
                 }
 
@@ -102,7 +128,7 @@ namespace Persona.Services.ObtenerPersona
             }
             catch (Exception ex)
             {
-                BPSegurosException argosEx = new BPSegurosException((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error al obtener las personas.", ex);
+                BPSegurosException argosEx = new BPSegurosException((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error al obtener las pólizas.", ex);
                 _logger.LogError(string.Format("{0} - Exception: {1}", httpContext.TraceIdentifier, argosEx.ToString()));
                 return new ObjectResult(new ErrorResponseModel
                 {

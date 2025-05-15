@@ -3,6 +3,7 @@ using Poliza.Services;
 using Poliza.Services.ListaSelectorPolizaCobertura;
 using Poliza.Services.ListaSelectorPolizaEstado;
 using Poliza.Services.ListaSelectorTipoPoliza;
+using Poliza.Services.ObtenerPoliza;
 
 namespace Poliza.Controllers
 {
@@ -12,6 +13,9 @@ namespace Poliza.Controllers
     {
         [HttpPost]
         public async Task<IActionResult> CrearPoliza([FromServices] CrearPolizaService service) => await service.CrearPoliza(HttpContext);
+
+        [HttpGet]
+        public async Task<IActionResult> Obtener([FromServices] ObtenerPolizaService service) => await service.Obtener(HttpContext);
 
         [HttpGet("select-estado")]
         public async Task<IActionResult> ListaSelectorPolizaEstado([FromServices] ListaSelectorPolizaEstadoService service) => await service.ListaSelectorPolizaEstado(HttpContext);

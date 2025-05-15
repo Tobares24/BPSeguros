@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useForm } from "../../hooks/useForm";
-import { SpinnerComponent } from "../../components/SpinnerComponent";
+import { AlertaService } from "../../Services/AlertaService";
+import { ButtonComponent } from "../../components/ButtonComponent";
+import { DatePickerComponent } from "../../components/DatePickerComponent";
+import { formatearFechaGuardar } from "../../utils/FormateadorFecha";
 import { FormularioComponent } from "../../components/FormularioComponent";
 import { InputComponent } from "../../components/InputComponent";
-import { SelectorTipoPolizaComponent } from "./SelectorTipoPolizaComponent";
+import { InputNumericComponent } from "../../components/InputNumericComponent";
 import { SelectorCoberturaComponent } from "./SelectorCoberturaComponent";
 import { SelectorEstadoComponent } from "./SelectorEstadoComponent";
 import { SelectorPersonaComponent } from "../../Persona/components/SelectorPersonaComponent";
-import { InputNumericComponent } from "../../components/InputNumericComponent";
-import { AlertaService } from "../../Services/AlertaService";
-import { formatearFechaGuardar } from "../../utils/FormateadorFecha";
+import { SelectorTipoPolizaComponent } from "./SelectorTipoPolizaComponent";
+import { SpinnerComponent } from "../../components/SpinnerComponent";
 import PolizaService from "../../Services/PolizaService";
-import { DatePickerComponent } from "../../components/DatePickerComponent";
-import { ButtonComponent } from "../../components/ButtonComponent";
 
 const initialForm = {
   numeroPoliza: "",
