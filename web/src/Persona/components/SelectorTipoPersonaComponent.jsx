@@ -51,7 +51,7 @@ export const SelectorTipoPersonaComponent = ({
     datos?.map((item) => {
       const nuevosRegistros = {
         value: item?.id,
-        label: item?.tipoPersona,
+        label: item?.tipoPersona ?? "",
       };
 
       nuevosDatos.push(nuevosRegistros);

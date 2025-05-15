@@ -51,7 +51,7 @@ export const SelectorPeriodoComponent = ({
     datos?.map((item) => {
       const nuevosRegistros = {
         value: item?.id,
-        label: item?.descripcion,
+        label: item?.descripcion ?? "",
       };
 
       nuevosDatos.push(nuevosRegistros);

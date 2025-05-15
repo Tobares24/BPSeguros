@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertaService } from "../../Services/AlertaService";
 import { SelectorComponent } from "../../components/SelectorComponent";
 import PersonaService from "../../Services/PersonaService";
@@ -51,7 +51,9 @@ export const SelectorPersonaComponent = ({
     datos?.map((item) => {
       const nuevosRegistros = {
         value: item?.cedulaAsegurado,
-        label: `${item?.cedulaAsegurado} - ${item?.nombre} ${item?.primerApellido} ${item?.segundoApellido}`,
+        label: `${item?.cedulaAsegurado || ""} - ${item?.nombre || ""} ${
+          item?.primerApellido || ""
+        } ${item?.segundoApellido || ""}`,
       };
 
       nuevosDatos.push(nuevosRegistros);
