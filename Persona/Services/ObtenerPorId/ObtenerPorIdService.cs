@@ -3,27 +3,24 @@ using Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persona.Entities;
-using Persona.Models.ActualizarPersona;
-using Persona.Services.CrearPersona;
+using Persona.Models.ObtenerPorId;
 using System.Net;
 using System.Reflection;
 
-namespace Persona.Services.ActualizarPersona
+namespace Persona.Services.ObtenerPorId
 {
-    public class ActualizarPersonaService
+    public class ObtenerPorIdService
     {
-        private readonly ILogger<CrearPersonaService> _logger;
+        private readonly ILogger<ObtenerPorIdService> _logger;
         private readonly DbContextFactoryService _dbContextFactoryService;
-        private readonly JsonService _jsonService;
 
-        public ActualizarPersonaService(ILogger<CrearPersonaService> logger, DbContextFactoryService dbContextFactoryService, JsonService jsonService)
+        public ObtenerPorIdService(ILogger<ObtenerPorIdService> logger, DbContextFactoryService dbContextFactoryService)
         {
             _logger = logger;
             _dbContextFactoryService = dbContextFactoryService;
-            _jsonService = jsonService;
         }
 
-        public async Task<IActionResult> Actualizar(HttpContext httpContext)
+        public async Task<IActionResult> ObtenerPorId(HttpContext httpContext)
         {
             try
             {
@@ -41,41 +38,26 @@ namespace Persona.Services.ActualizarPersona
                 string cedula = httpContext.Request.RouteValues["cedulaAsegurado"]!.ToString()!;
                 _logger.LogInformation(string.Format("{0} - El parámetro cedulaAsegurado tiene el siguiente valor: '{1}'", httpContext.TraceIdentifier, cedula));
 
-                ActualizarPersonaRequestModel requestModel = await _jsonService.RequestToObjectAsync<ActualizarPersonaRequestModel>(httpContext);
-
                 using (var dbContext = _dbContextFactoryService.CreateDbContext<PersonaDbContext>())
                 {
-                    bool existePersona = await dbContext.Persona.AnyAsync(x => x.CedulaAsegurado == cedula);
-                    if (!existePersona)
+                    var personaEntity = await dbContext.Persona.FirstOrDefaultAsync(x => x.CedulaAsegurado == cedula);
+                    if (personaEntity is null)
                     {
                         _logger.LogError(string.Format("{0} - La persona no existe con la cédula '{1}'", traceId, cedula));
                         throw new BPSegurosException((int)HttpStatusCode.NotFound, "La persona no ha sido encontrada.");
                     }
 
-                    await dbContext.Persona.Where(x => !x.EstaEliminado && x.CedulaAsegurado == cedula)
-                      .ExecuteUpdateAsync(x => x.SetProperty(y => y.FechaNacimiento, requestModel.FechaNacimiento));
-
-                    using (var transaction = await dbContext.Database.BeginTransactionAsync())
+                    ObtenerPorIdResponseModel responseModel = new()
                     {
-                        try
-                        {
-                            await transaction.CommitAsync();
-                        }
-                        catch (BPSegurosException ex)
-                        {
-                            _logger.LogError(string.Format("{0} - BPSegurosException: {1}", traceId, ex.ToString()));
-                            await transaction.RollbackAsync();
-                            throw;
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(string.Format("{0} - Exception: {1}", traceId, ex.ToString()));
-                            await transaction.RollbackAsync();
-                            throw;
-                        }
-                    }
+                        CedulaAsegurado = personaEntity.CedulaAsegurado,
+                        FechaNacimiento = personaEntity.FechaNacimiento,
+                        IdTipoPersona = personaEntity.IdTipoPersona,
+                        Nombre = personaEntity.Nombre,
+                        PrimerApellido = personaEntity.PrimerApellido,
+                        SegundoApellido = personaEntity.SegundoApellido,
+                    };
 
-                    IActionResult actionResult = new StatusCodeResult((int)HttpStatusCode.OK);
+                    IActionResult actionResult = new ObjectResult(responseModel);
 
                     return actionResult;
                 }
@@ -96,7 +78,7 @@ namespace Persona.Services.ActualizarPersona
             }
             catch (Exception ex)
             {
-                BPSegurosException argosEx = new BPSegurosException((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error al actualizar la persona.", ex);
+                BPSegurosException argosEx = new BPSegurosException((int)HttpStatusCode.InternalServerError, "Ha ocurrido un error al obtener el detalle de la persona.", ex);
                 _logger.LogError(string.Format("{0} - Exception: {1}", httpContext.TraceIdentifier, argosEx.ToString()));
                 return new ObjectResult(new ErrorResponseModel
                 {

@@ -3,6 +3,26 @@ import ResponseService from "./ResponseService ";
 import { API_PERSONA } from "../constants/constantes";
 
 export default class PersonaService {
+  async crear(modelo) {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const response = await fetch(`${API_PERSONA}`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(modelo),
+        headers,
+      });
+
+      await ResponseService.handleNoContent(response);
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+      throw error;
+    }
+  }
+
   async listaSelectorPersona(filtroBusqueda) {
     try {
       const headers = {
@@ -59,29 +79,8 @@ export default class PersonaService {
     }
   }
 
-  async crear(modelo) {
-    try {
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      const response = await fetch(`${API_PERSONA}`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(modelo),
-        headers,
-      });
-
-      const responsId = await ResponseService.handleLocationHeader(response);
-      return responsId;
-    } catch (error) {
-      AlertaService.error("Error", `${error?.message}`);
-      throw error;
-    }
-  }
-
   async obtener({
-    cantidadRegistros,
+    registroPorPagina,
     cedulaAsegurado,
     idTipoPersona,
     nombre,
@@ -102,7 +101,7 @@ export default class PersonaService {
       params.append("segundoApellido", segundoApellido);
       params.append("idTipoPersona", idTipoPersona);
       params.append("paginaActual", paginaActual);
-      params.append("cantidadRegistros", cantidadRegistros);
+      params.append("registroPorPagina", registroPorPagina);
 
       const response = await fetch(`${API_PERSONA}?${params.toString()}`, {
         method: "GET",
@@ -114,6 +113,65 @@ export default class PersonaService {
       return responseObject;
     } catch (error) {
       AlertaService.error("¡Error!", `${error?.message}`);
+      throw error;
+    }
+  }
+
+  async obtenerPorId(cedulaAsegurado) {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const response = await fetch(`${API_PERSONA}/${cedulaAsegurado}`, {
+      method: "GET",
+      headers,
+      credentials: "include",
+    });
+
+    try {
+      const responseObject = await ResponseService.handle(response);
+      return responseObject;
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+      throw error;
+    }
+  }
+
+  async actualizar(modelo, cedulaAsegurado) {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const response = await fetch(`${API_PERSONA}/${cedulaAsegurado}`, {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify(modelo),
+        headers,
+      });
+
+      await ResponseService.handleNoContent(response);
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+      throw error;
+    }
+  }
+
+  async eliminar(cedulaAsegurado) {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const response = await fetch(`${API_PERSONA}/${cedulaAsegurado}`, {
+      method: "DELETE",
+      headers,
+      credentials: "include",
+    });
+
+    try {
+      await ResponseService.handleNoContent(response);
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
       throw error;
     }
   }

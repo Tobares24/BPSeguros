@@ -32,9 +32,9 @@ namespace Persona.Entities
 
             modelBuilder.Entity<PersonaEntity>()
                 .HasOne(x => x.TipoPersona)
-                .WithOne(x => x.Persona)
-                .HasForeignKey<PersonaEntity>(x => x.IdTipoPersona)
-                .IsRequired(false)
+                .WithMany(x => x.Personas)
+                .HasForeignKey(x => x.IdTipoPersona)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Persona_TipoPersona");
         }

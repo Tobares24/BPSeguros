@@ -16,6 +16,7 @@ const columnas = [
     nombre: "fechaNacimiento",
     titulo: "Fecha Nacimiento",
     render: (fecha) => {
+      if (!fecha) return "";
       return new Date(fecha).toLocaleDateString("es-ES", {
         year: "numeric",
         month: "long",
@@ -25,50 +26,12 @@ const columnas = [
   },
 ];
 
-// const personasFicticias = [
-//   {
-//     cedulaAsegurado: "001-150394-0001",
-//     fechaNacimiento: "1994-03-15",
-//     nombre: "Carlos",
-//     primerApellido: "Gómez",
-//     segundoApellido: "Ramírez",
-//     tipoPersona: "Física",
-//   },
-//   {
-//     cedulaAsegurado: "002-221280-0002",
-//     fechaNacimiento: "1980-12-22",
-//     nombre: "Ana",
-//     primerApellido: "Martínez",
-//     segundoApellido: "Lopez",
-//     tipoPersona: "Física",
-//   },
-//   {
-//     cedulaAsegurado: "003-051077-0003",
-//     fechaNacimiento: "1977-10-05",
-//     nombre: "Luis",
-//     primerApellido: "Fernández",
-//     segundoApellido: "Castillo",
-//     tipoPersona: "Jurídica",
-//   },
-//   {
-//     cedulaAsegurado: "004-010191-0004",
-//     fechaNacimiento: "1991-01-01",
-//     nombre: "María",
-//     primerApellido: "Vargas",
-//     segundoApellido: "Mendoza",
-//     tipoPersona: "Física",
-//   },
-//   {
-//     cedulaAsegurado: "005-310598-0005",
-//     fechaNacimiento: "1998-05-31",
-//     nombre: "José",
-//     primerApellido: "Rojas",
-//     segundoApellido: "Pérez",
-//     tipoPersona: "Jurídica",
-//   },
-// ];
-
-export const TablaPersonaComponent = ({ children, refrescarTabla }) => {
+export const TablaPersonaComponent = ({
+  children,
+  refrescarTabla,
+  setRefrescarTabla,
+  setCedulaSeleccionada,
+}) => {
   const [filtro, setFiltro] = useState({
     cedulaAsegurado: "",
     nombre: "",
@@ -80,8 +43,9 @@ export const TablaPersonaComponent = ({ children, refrescarTabla }) => {
   const [bloquearBoton, setBloquearBoton] = useState(false);
   const [data, setData] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
-  const [cantidadPaginas, setCantidadPaginas] = useState(10);
+  const [registroPorPagina, setRegistroPorPagina] = useState(10);
   const [cantidadRegistros, setCantidadRegistros] = useState(0);
+  const [cantidadPaginas, setCantidadPaginas] = useState(0);
 
   const personaService = new PersonaService();
 
@@ -91,7 +55,7 @@ export const TablaPersonaComponent = ({ children, refrescarTabla }) => {
     try {
       const respuesta = await personaService.obtener({
         ...filtro,
-        cantidadRegistros,
+        registroPorPagina,
         paginaActual,
       });
 
@@ -109,31 +73,61 @@ export const TablaPersonaComponent = ({ children, refrescarTabla }) => {
     }
   };
 
+  const eliminar = async (cedulaAsegurado) => {
+    setCargando(true);
+    try {
+      await personaService.eliminar(cedulaAsegurado);
+      setRefrescarTabla(true);
+    } catch (error) {
+      AlertaService.error("¡Error!", `${error?.message}`);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   const onSelectChange = (e) => {
     const selectedValue = e.target.value;
-    setCantidadPaginas(Number(selectedValue));
+    setRegistroPorPagina(Number(selectedValue));
+  };
+
+  const onDelete = ({ cedulaAsegurado }) => {
+    AlertaService.confirmation(
+      "Advertencia",
+      "¿Está seguro que desea eliminar la persona?",
+      async (respuesta) => {
+        if (respuesta) {
+          await eliminar(cedulaAsegurado);
+        }
+      },
+      "Eliminar"
+    );
+  };
+
+  const onUpdate = ({ cedulaAsegurado }) => {
+    setCedulaSeleccionada(cedulaAsegurado);
   };
 
   const acciones = [
     {
       label: "Editar",
       color: "primary",
-      onClick: () => {
-        console.log("click Editar");
+      onClick: (objeto) => {
+        onUpdate(objeto);
       },
     },
     {
       label: "Eliminar",
       color: "danger",
-      onClick: () => {
-        console.log("click Eliminar");
+      onClick: (objeto) => {
+        onDelete(objeto);
       },
     },
   ];
 
   useEffect(() => {
+    setRefrescarTabla(false);
     obtener();
-  }, [filtro, cantidadPaginas, cantidadRegistros, refrescarTabla]);
+  }, [filtro, refrescarTabla, registroPorPagina, paginaActual]);
 
   return (
     <>
@@ -150,16 +144,17 @@ export const TablaPersonaComponent = ({ children, refrescarTabla }) => {
         datos={data}
         paginaActual={paginaActual}
         cantidadPaginas={cantidadPaginas}
+        cantidadRegistros={cantidadRegistros}
         onPaginaCambio={setPaginaActual}
         cargando={cargando}
         acciones={acciones}
       >
         <div className="d-flex justify-content-between mb-3">
           <div>
-            <label htmlFor="cantidadRegistros">Registros por página: </label>
+            <label htmlFor="registroPorPagina">Registros por página: </label>
             <select
-              id="cantidadRegistros"
-              value={cantidadPaginas}
+              id="registroPorPagina"
+              value={registroPorPagina}
               onChange={onSelectChange}
             >
               <option value={10}>10</option>

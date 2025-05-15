@@ -66,9 +66,6 @@ namespace Persona.Migrations
                     b.HasKey("CedulaAsegurado")
                         .HasName("PK_Persona_CedulaAsegurado");
 
-                    b.HasIndex("IdTipoPersona")
-                        .IsUnique();
-
                     b.HasIndex(new[] { "EstaEliminado" }, "EstaEliminadoIndex");
 
                     b.HasIndex(new[] { "IdTipoPersona" }, "IdTipoPersonaIndex");
@@ -115,9 +112,10 @@ namespace Persona.Migrations
             modelBuilder.Entity("Common.Entities.PersonaEntity", b =>
                 {
                     b.HasOne("Common.Entities.TipoPersonaEntity", "TipoPersona")
-                        .WithOne("Persona")
-                        .HasForeignKey("Common.Entities.PersonaEntity", "IdTipoPersona")
+                        .WithMany("Personas")
+                        .HasForeignKey("IdTipoPersona")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
                         .HasConstraintName("FK_Persona_TipoPersona");
 
                     b.Navigation("TipoPersona");
@@ -125,7 +123,7 @@ namespace Persona.Migrations
 
             modelBuilder.Entity("Common.Entities.TipoPersonaEntity", b =>
                 {
-                    b.Navigation("Persona");
+                    b.Navigation("Personas");
                 });
 #pragma warning restore 612, 618
         }

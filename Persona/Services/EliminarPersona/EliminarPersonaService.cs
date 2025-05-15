@@ -27,15 +27,15 @@ namespace Persona.Services.EliminarPersona
 
                 string traceId = httpContext.TraceIdentifier;
 
-                bool cedulaEsNula = httpContext.Request.RouteValues.ContainsKey("cedula");
+                bool cedulaEsNula = httpContext.Request.RouteValues.ContainsKey("cedulaAsegurado");
                 if (!cedulaEsNula)
                 {
                     _logger.LogError(string.Format("{0} - El parámetro cédula de la persona no está en la solicitud", httpContext.TraceIdentifier));
                     throw new BPSegurosException((int)HttpStatusCode.BadRequest, "El parámetro cédula de la persona es requerido y no fue proporcionado en la solicitud.");
                 }
 
-                string cedula = httpContext.Request.RouteValues["cedula"]!.ToString()!;
-                _logger.LogInformation(string.Format("{0} - El parámetro cedula tiene el siguiente valor: '{1}'", httpContext.TraceIdentifier, cedula));
+                string cedula = httpContext.Request.RouteValues["cedulaAsegurado"]!.ToString()!;
+                _logger.LogInformation(string.Format("{0} - El parámetro cedulaAsegurado tiene el siguiente valor: '{1}'", httpContext.TraceIdentifier, cedula));
 
                 using (var dbContext = _dbContextFactoryService.CreateDbContext<PersonaDbContext>())
                 {

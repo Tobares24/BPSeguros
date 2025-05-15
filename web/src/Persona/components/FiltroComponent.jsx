@@ -5,7 +5,7 @@ import { InputComponent } from "../../components/InputComponent";
 import { SelectorTipoPersonaComponent } from "./SelectorTipoPersonaComponent";
 
 const initialForm = {
-  cedula: "",
+  cedulaAsegurado: "",
   nombre: "",
   primerApellido: "",
   segundoApellido: "",
@@ -43,10 +43,10 @@ export const FiltroComponent = ({ filtro, setFiltro, bloquearBoton }) => {
         <div className="col-4">
           <InputComponent
             label={"Cédula Asegurado"}
-            name={"cedula"}
+            name={"cedulaAsegurado"}
             onChange={onInputChange}
             placeholder={"Cédula Asegurado"}
-            value={filtroInterno?.cedula}
+            value={filtroInterno?.cedulaAsegurado}
           />
         </div>
         <div className="col-4">
@@ -79,7 +79,7 @@ export const FiltroComponent = ({ filtro, setFiltro, bloquearBoton }) => {
         <div className="col-4">
           <SelectorTipoPersonaComponent
             nameTipoPersona="idTipoPersona"
-            setValorSeleccionado={setFiltro}
+            setValorSeleccionado={setFiltroInterno}
             valorSeleccionado={filtroInterno?.idTipoPersona}
           />
         </div>

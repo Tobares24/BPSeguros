@@ -50,6 +50,6 @@ namespace Common.Entities
         public bool EstaEliminado { get; set; }
 
         [NotMapped]
-        public virtual PolizaEntity? Poliza { get; set; }
+        public virtual List<PolizaEntity>? Polizas { get; set; }
     }
 }

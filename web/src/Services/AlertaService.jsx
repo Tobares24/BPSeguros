@@ -41,16 +41,16 @@ export const AlertaService = {
     title,
     text,
     callback,
+    labelButtonConfirm,
     labelButtonCancel,
-    labelButtonConfirm
   ) => {
     return Swal.fire({
       title: title || "¿Estás seguro?",
       text: text || "Esta acción no puede deshacerse.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: labelButtonCancel || "Aceptar",
-      cancelButtonText: labelButtonConfirm || "Cancelar",
+      confirmButtonText: labelButtonConfirm || "Aceptar",
+      cancelButtonText: labelButtonCancel || "Cancelar",
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
     }).then((result) => {

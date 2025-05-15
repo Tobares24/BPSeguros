@@ -46,7 +46,8 @@ export default class ResponseService {
     return new Promise((resolve, reject) => {
       response.text().then((resText) => {
         if (response.ok) {
-          const locationHeader = response.headers.get("Location");
+          const locationHeader = response.headers.get("location");
+          console.log(response.headers);
 
           if (locationHeader) {
             const responseTemp = locationHeader.split("/");
@@ -70,6 +71,29 @@ export default class ResponseService {
               code: 500,
               message: "Internal Error",
               traceId: response.headers.get("Traceid") || "N/A",
+              details: "N/A",
+            };
+            reject(errorModel);
+          }
+        }
+      });
+    });
+  }
+
+  static handleNoContent(response) {
+    return new Promise((accept, reject) => {
+      response.text().then((resText) => {
+        if (response.ok) {
+          accept();
+        } else {
+          try {
+            const resJson = JSON.parse(resText);
+            reject(resJson);
+          } catch (error) {
+            const errorModel = {
+              code: 500,
+              message: "Internal Error",
+              traceId: response.headers.get("traceid") || "N/A",
               details: "N/A",
             };
             reject(errorModel);

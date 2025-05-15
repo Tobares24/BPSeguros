@@ -88,7 +88,8 @@ namespace Persona.Services.CrearPersona
                         }
                     }
 
-                    IActionResult actionResult = new CreatedResult("/persona/" + personaEntity.CedulaAsegurado, null);
+                    IActionResult actionResult = new StatusCodeResult((int)HttpStatusCode.OK);
+
                     return actionResult;
                 }
             }

@@ -22,6 +22,6 @@ namespace Common.Entities
         [Comment("Indicador de borrado lógico")]
         public bool EstaEliminado { get; set; }
 
-        public virtual PersonaEntity? Persona { get; set; }
+        public virtual List<PersonaEntity>? Personas { get; set; }
     }
 }

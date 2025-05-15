@@ -11,6 +11,7 @@ export const SelectorTipoPersonaComponent = ({
   setValorSeleccionado = () => {},
   valorSeleccionado = "",
   error = "",
+  deshabilitar = false,
 }) => {
   const [cargando, setCargando] = useState(false);
   const [filtro, setFiltro] = useState(valorSeleccionado);
@@ -60,7 +61,7 @@ export const SelectorTipoPersonaComponent = ({
   };
 
   const handleSelect = (event) => {
-    const selectedValue = event.target.value; 
+    const selectedValue = event.target.value;
 
     setValorSeleccionado((prevData) => ({
       ...prevData,
@@ -74,7 +75,6 @@ export const SelectorTipoPersonaComponent = ({
 
   return (
     <div>
-      <label>{label}</label>
       <SelectorComponent
         options={tipoPersonas}
         loading={cargando}
@@ -84,6 +84,8 @@ export const SelectorTipoPersonaComponent = ({
         placeholder="Buscar"
         isRequired={isRequired}
         error={error}
+        deshabilitar={deshabilitar}
+        label={label}
       />
     </div>
   );

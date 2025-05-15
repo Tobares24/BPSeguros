@@ -23,7 +23,6 @@ namespace Persona.Models.CrearPersona
         [RegularExpression(@"^[{]?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}[}]?$", ErrorMessage = "El identificador de tipo persona debe tener un formato GUID válido.")]
         public Guid IdTipoPersona { get; set; }
 
-        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
         public DateTime? FechaNacimiento { get; set; }
     }
 }

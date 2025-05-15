@@ -9,6 +9,7 @@ using Persona.Services.EliminarPersona;
 using Persona.Services.ListaSelectorPersona;
 using Persona.Services.ListaSelectorTipoPersona;
 using Persona.Services.ObtenerPersona;
+using Persona.Services.ObtenerPorId;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddTransient<ActualizarPersonaService>();
 builder.Services.AddTransient<ListaSelectorPersonaService>();
 builder.Services.AddTransient<ListaSelectorTipoPersonaService>();
 builder.Services.AddTransient<DataInicialService>();
+builder.Services.AddTransient<ObtenerPorIdService>();
 builder.Services.AddDbContext<PersonaDbContext>(options =>
 {
     SqlConnection sqlConnection = new();

@@ -7,6 +7,8 @@ export const SelectorComponent = ({
   placeholder,
   onSearch,
   onSelect,
+  label,
+  deshabilitar,
   isRequired = true,
   error = "",
 }) => {
@@ -25,6 +27,7 @@ export const SelectorComponent = ({
   return (
     <>
       <label className="form-label d-flex align-items-center gap-1">
+        {label}
         {isRequired && !error && (
           <span className="text-danger" title="Campo requerido">
             *
@@ -43,6 +46,7 @@ export const SelectorComponent = ({
         onKeyDown={handleChange}
         placeholder={placeholder}
         autoComplete="off"
+        disabled={deshabilitar}
       />
       {loading && (
         <div className="spinner-border text-primary mt-2" role="status">
@@ -55,6 +59,7 @@ export const SelectorComponent = ({
         required={isRequired}
         onChange={onSelect}
         value={value}
+        disabled={deshabilitar}
       >
         {options.length === 0 ? (
           <option value="" disabled>

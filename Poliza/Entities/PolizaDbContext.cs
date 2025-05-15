@@ -60,9 +60,9 @@ namespace Poliza.Entities
 
             modelBuilder.Entity<PolizaEntity>()
                 .HasOne(x => x.Persona)
-                .WithOne(x => x.Poliza)
-                .HasForeignKey<PolizaEntity>(x => x.CedulaAsegurado)
-                .IsRequired(false)
+                .WithMany(x => x.Polizas)   
+                .HasForeignKey(x => x.CedulaAsegurado)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Poliza_Persona");
         }

@@ -1,14 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
+import { useForm } from "../../hooks/useForm";
 import { AlertaService } from "../../Services/AlertaService";
 import { ButtonComponent } from "../../components/ButtonComponent";
 import { DatePickerComponent } from "../../components/DatePickerComponent";
-import { formatearFechaGuardar } from "../../utils/FormateadorFecha";
+import {
+  formatearFechaGuardar,
+  formatearFechaISO,
+} from "../../utils/FormateadorFecha";
 import { FormularioComponent } from "../../components/FormularioComponent";
 import { InputComponent } from "../../components/InputComponent";
 import { SelectorTipoPersonaComponent } from "./SelectorTipoPersonaComponent";
 import { SpinnerComponent } from "../../components/SpinnerComponent";
-import { useForm } from "../../hooks/useForm";
 import PersonaService from "../../Services/PersonaService";
 
 const initialForm = {
@@ -35,8 +38,17 @@ const initialErrorModel = {
   segundoApellido: "",
 };
 
-export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
+const ACCION_CREAR = "CREAR";
+const ACCION_MODIFICAR = "MODIFICAR";
+
+export const FormularioPersonaComponent = ({
+  onCancel,
+  setRefrescarTabla,
+  cedulaSeleccionada,
+}) => {
   const [cargando, setCargando] = useState(false);
+  const [tipoAccion, setTipoAccion] = useState(ACCION_CREAR);
+  const [deshabilitar, setDeshabilitar] = useState(false);
 
   const {
     errorModel,
@@ -47,7 +59,6 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
     setErrorModel,
     setFormState,
     setValidateModel,
-    validateModel,
   } = useForm(initialForm, initialValidateModel, initialErrorModel);
 
   const personaService = new PersonaService();
@@ -65,17 +76,66 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
       await personaService.crear(nuevoObjeto);
 
       setRefrescarTabla(true);
-
+      setState();
       AlertaService.success("Exitoso", "La persona ha sido creada con éxito.");
     } catch (error) {
       AlertaService.error("Error", `${error?.message}`);
     } finally {
       setCargando(false);
-      setRefrescarTabla(false);
     }
   };
 
-  const onSubtmit = (event) => {
+  const obtenerPorId = async () => {
+    setCargando(true);
+    try {
+      const objeto = await personaService.obtenerPorId(cedulaSeleccionada);
+
+      const fechaFormateada = formatearFechaISO(objeto?.fechaNacimiento);
+
+      const nuevoObjeto = {
+        ...objeto,
+        fechaNacimiento: fechaFormateada,
+      };
+
+      setFormState(nuevoObjeto);
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const actualizarPersona = async () => {
+    setCargando(true);
+    try {
+      const fechaFormateada = formatearFechaGuardar(formState.fechaNacimiento);
+
+      const nuevoObjeto = {
+        ...formState,
+        fechaNacimiento: fechaFormateada,
+      };
+
+      await personaService.actualizar(nuevoObjeto, cedulaSeleccionada);
+
+      setRefrescarTabla(true);
+      setState();
+      AlertaService.success(
+        "Exitoso",
+        "La persona ha sido actualizada con éxito."
+      );
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const setState = () => {
+    onResetForm();
+    onCancel(true);
+  };
+
+  const onSubmit = (event) => {
     event.preventDefault();
 
     const formularioInvalido = onValidateForm();
@@ -85,9 +145,13 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
     AlertaService.confirmation(
       "Advertencia",
       "¿Está seguro que desea guardar la persona?",
-      (respuesta) => {
+      async (respuesta) => {
         if (respuesta) {
-          crearPersona();
+          if (tipoAccion === ACCION_CREAR) {
+            await crearPersona();
+          } else if (tipoAccion === ACCION_MODIFICAR) {
+            await actualizarPersona();
+          }
         }
       }
     );
@@ -101,8 +165,7 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
       "¿Está seguro que desea salir?",
       (respuesta) => {
         if (respuesta) {
-          onResetForm();
-          onCancel(true);
+          setState();
         }
       }
     );
@@ -121,6 +184,14 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
     }
   }, [formState.idTipoPersona]);
 
+  useEffect(() => {
+    if (cedulaSeleccionada) {
+      setTipoAccion(ACCION_MODIFICAR);
+      setDeshabilitar(true);
+      obtenerPorId();
+    }
+  }, [cedulaSeleccionada]);
+
   return (
     <>
       <SpinnerComponent show={cargando} />
@@ -134,6 +205,7 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
             value={formState.cedulaAsegurado}
             requerido={true}
             error={errorModel.cedulaAsegurado}
+            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
@@ -145,6 +217,7 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
             value={formState.nombre}
             requerido={true}
             error={errorModel.nombre}
+            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
@@ -156,6 +229,7 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
             value={formState.primerApellido}
             requerido={true}
             error={errorModel.primerApellido}
+            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
@@ -167,15 +241,17 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
             value={formState.segundoApellido}
             requerido={true}
             error={errorModel.segundoApellido}
+            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
           <SelectorTipoPersonaComponent
-            isRequired={validateModel.idTipoPersona}
+            isRequired={true}
             nameTipoPersona="idTipoPersona"
             setValorSeleccionado={setFormState}
             valorSeleccionado={formState.idTipoPersona}
             error={errorModel.idTipoPersona}
+            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
@@ -187,10 +263,7 @@ export const FormularioPersonaComponent = ({ onCancel, setRefrescarTabla }) => {
           />
         </div>
       </FormularioComponent>
-      <ButtonComponent
-        onClickGuardar={onSubtmit}
-        onClickCancelar={onCancelar}
-      />
+      <ButtonComponent onClickGuardar={onSubmit} onClickCancelar={onCancelar} />
     </>
   );
 };
