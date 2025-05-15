@@ -26,7 +26,6 @@ const initialValidateModel = {
   cedulaAsegurado: false,
   nombre: false,
   primerApellido: false,
-  segundoApellido: false,
   idTipoPersona: false,
 };
 
@@ -35,7 +34,6 @@ const initialErrorModel = {
   nombre: "",
   primerApellido: "",
   idTipoPersona: "",
-  segundoApellido: "",
 };
 
 const ACCION_CREAR = "CREAR";
@@ -239,8 +237,6 @@ export const FormularioPersonaComponent = ({
             onChange={onInputChange}
             placeholder={"Segundo Apellido"}
             value={formState.segundoApellido}
-            requerido={true}
-            error={errorModel.segundoApellido}
             deshabilitar={deshabilitar}
           />
         </div>
