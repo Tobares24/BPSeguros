@@ -1,41 +1,39 @@
-import React, { useCallback } from "react";
-
 export const InputNumericComponent = ({
-    setForm = () => {},
-    valor = "",
-    label = "",
-    placeholder = "",
-    name = "",
-    decimales = 0,
-    esObligatorio = false
+  setForm = () => {},
+  valor = "",
+  label = "",
+  placeholder = "",
+  name = "",
+  decimales = 0,
+  requerido = false,
 }) => {
-    const handleChange = useCallback((e) => {
-        const entrada = e.target.value;
-        const patron = `^\\d*(\\.\\d{0,${decimales}})?$`;
-        const regex = new RegExp(patron);
+  const handleChange = (e) => {
+    let valor = e.target.value;
 
-        if (entrada === '' || regex.test(entrada)) {
-            setForm(prev => ({
-                ...prev,
-                [name]: entrada
-            }));
-        }
-    }, [setForm, decimales, name]);
+    const regex = new RegExp(`^\\d*(\\.\\d{0,${decimales}})?$`);
 
-    return (
-        <div className="form-group mb-3">
-            <label className="form-label">
-                {label}
-                {esObligatorio && <span className="text-danger mx-1">*</span>}
-            </label>
-            <input
-                type="text"
-                className="form-control"
-                placeholder={placeholder}
-                name={name}
-                value={valor}
-                onChange={handleChange}
-            />
-        </div>
-    );
+    if (valor === "" || regex.test(valor)) {
+      setForm((prevState) => ({
+        ...prevState,
+        [name]: valor,
+      }));
+    }
+  };
+
+  return (
+    <div className="form-group mb-3">
+      <label className="form-label">
+        {label}
+        {requerido && <span className="text-danger mx-1">*</span>}
+      </label>
+      <input
+        type="text"
+        className="form-control"
+        placeholder={placeholder}
+        name={name}
+        value={valor}
+        onChange={handleChange}
+      />
+    </div>
+  );
 };

@@ -14,8 +14,8 @@ export const SelectorEstadoComponent = ({
   deshabilitar = false,
 }) => {
   const [cargando, setCargando] = useState(false);
-  const [filtro, setFiltro] = useState(valorSeleccionado);
   const [data, setData] = useState([]);
+  const [filtro, setFiltro] = useState(valorSeleccionado);
 
   const polizaService = new PolizaService();
 

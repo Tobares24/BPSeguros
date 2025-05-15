@@ -12,7 +12,7 @@ namespace Common.Services
             _logger = logger;
         }
 
-        private HttpClient InitHttpClient(string traceId, string apiEndpoint, string userId, string businessIds, string accountIds)
+        private HttpClient InitHttpClient(string traceId, string apiEndpoint)
         {
             try
             {
@@ -61,14 +61,14 @@ namespace Common.Services
             }
         }
 
-        public async Task<HttpResponseMessage> GetHttpResponseMessage(string traceId, string baseUrlAddress, string methodPath, string userId = "", string businessIds = "", string accountIds = "")
+        public async Task<HttpResponseMessage> GetHttpResponseMessage(string traceId, string baseUrlAddress, string methodPath)
         {
             try
             {
                 _logger.LogInformation("{0} - Iniciando ejecución del método {1}", traceId,
                     MethodBase.GetCurrentMethod()!.ReflectedType!.FullName + "." + MethodBase.GetCurrentMethod()!.Name);
 
-                using (var httpClient = InitHttpClient(traceId, baseUrlAddress, userId, businessIds, accountIds))
+                using (var httpClient = InitHttpClient(traceId, baseUrlAddress))
                 {
                     return await httpClient.GetAsync(methodPath);
                 }

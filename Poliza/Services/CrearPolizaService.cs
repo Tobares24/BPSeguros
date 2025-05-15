@@ -42,10 +42,10 @@ namespace Poliza.Services
 
                 try
                 {
-                    var personaResponseJson = await _internalService.GetEntityById<IDictionary<string, object>>(httpContext.TraceIdentifier,
+                    var personaResponseJson = await _internalService.GetEntityById<object>(httpContext.TraceIdentifier,
                        "api/personas", requestModel.CedulaAsegurado!, "persona");
 
-                    ObtenerPorIdResponseModel personaObtenida = _jsonService.ConvertToObject<ObtenerPorIdResponseModel>(personaResponseJson!["Persona"].ToString()!);
+                    ObtenerPorIdResponseModel personaObtenida = _jsonService.ConvertToObject<ObtenerPorIdResponseModel>(personaResponseJson!.ToString()!);
                 }
                 catch (BPSegurosException ex)
                 {
@@ -65,18 +65,21 @@ namespace Poliza.Services
                         throw new BPSegurosException((int)HttpStatusCode.Conflict, "El número de póliza ya existe.");
                     }
 
-                    var existeTipoPoliza = await dbContext.TipoPoliza.AnyAsync(x => !x.EstaEliminado && x.Id == requestModel.IdTipoPoliza);
+                    var existeTipoPoliza = await dbContext.TipoPoliza.AnyAsync(x => !x.EstaEliminado && x.Id == Guid.Parse(requestModel.IdTipoPoliza!));
                     if (!existeTipoPoliza)
                     {
                         _logger.LogError(string.Format("{0} - El tipo de póliza no ha sido encontrado con el identificador '{1}'", traceId, requestModel.IdTipoPoliza));
                         throw new BPSegurosException((int)HttpStatusCode.NoContent, "El tipo de póliza no ha sido encontrado.");
                     }
 
-                    var existeCobertura = await dbContext.PolizaCobertura.AnyAsync(x => !x.EstaEliminado && requestModel.IdCobertura != null && x.Id == requestModel.IdCobertura);
-                    if (!existeCobertura)
+                    if (!string.IsNullOrEmpty(requestModel.IdCobertura))
                     {
-                        _logger.LogError(string.Format("{0} - La cobertura no ha sido encontrada con el identificador '{1}'", traceId, requestModel.IdCobertura));
-                        throw new BPSegurosException((int)HttpStatusCode.NoContent, "La cobertura no ha sido encontrada.");
+                        var existeCobertura = await dbContext.PolizaCobertura.AnyAsync(x => !x.EstaEliminado && x.Id == Guid.Parse(requestModel.IdCobertura!));
+                        if (!existeCobertura)
+                        {
+                            _logger.LogError(string.Format("{0} - La cobertura no ha sido encontrada con el identificador '{1}'", traceId, requestModel.IdCobertura));
+                            throw new BPSegurosException((int)HttpStatusCode.NoContent, "La cobertura no ha sido encontrada.");
+                        }
                     }
 
                     PolizaEntity polizaEntity = new()
@@ -86,9 +89,9 @@ namespace Poliza.Services
                         FechaEmision = requestModel.FechaEmision,
                         FechaInclusion = requestModel.FechaInclusion,
                         FechaVencimiento = requestModel.FechaVencimiento,
-                        IdCobertura  = requestModel.IdCobertura,
-                        IdPolizaEstado = requestModel.IdPolizaEstado,
-                        IdTipoPoliza = requestModel.IdTipoPoliza,
+                        IdCobertura  = !string.IsNullOrEmpty(requestModel.IdCobertura) ? Guid.Parse(requestModel.IdCobertura) : null,
+                        IdPolizaEstado =  Guid.Parse(requestModel.IdPolizaEstado!),
+                        IdTipoPoliza =  Guid.Parse(requestModel.IdTipoPoliza!),
                         CedulaAsegurado = requestModel.CedulaAsegurado,
                         MontoAsegurado = requestModel.MontoAsegurado,
                         Prima = requestModel.Prima,

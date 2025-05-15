@@ -2,6 +2,7 @@ using Common.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Poliza.Entities;
+using Poliza.Services;
 using Poliza.Services.DataInicial;
 using Poliza.Services.ListaSelectorPolizaCobertura;
 using Poliza.Services.ListaSelectorPolizaEstado;
@@ -12,10 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging();
 builder.Services.AddControllers();
 builder.Services.AddSingleton<DbContextFactoryService>();
+builder.Services.AddTransient<APIService>();
+builder.Services.AddTransient<InternalService>();
+builder.Services.AddTransient<RequestModelValidationService>();
+builder.Services.AddTransient<JsonService>();
 builder.Services.AddSingleton<DataInicialService>();
 builder.Services.AddSingleton<ListaSelectorTipoPolizaService>();
 builder.Services.AddSingleton<ListaSelectorPolizaCoberturaService>();
 builder.Services.AddSingleton<ListaSelectorPolizaEstadoService>();
+builder.Services.AddTransient<CrearPolizaService>();
 builder.Services.AddDbContext<PolizaDbContext>(options =>
 {
     SqlConnection sqlConnection = new SqlConnection();

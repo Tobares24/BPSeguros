@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Poliza.Entities;
 
@@ -11,9 +12,11 @@ using Poliza.Entities;
 namespace Poliza.Migrations
 {
     [DbContext(typeof(PolizaDbContext))]
-    partial class PolizaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250515061643_202505150016")]
+    partial class _202505150016
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,13 +66,12 @@ namespace Poliza.Migrations
                         .HasComment("Identificador de la póliza");
 
                     b.Property<string>("Aseguradora")
-                        .HasMaxLength(128)
+                        .HasMaxLength(150)
                         .HasColumnType("VARCHAR")
                         .HasColumnOrder(13)
                         .HasComment("Nombre de la aseguradora");
 
                     b.Property<string>("CedulaAsegurado")
-                        .HasMaxLength(64)
                         .HasColumnType("VARCHAR")
                         .HasColumnOrder(4)
                         .HasComment("Cédula del asegurado");
@@ -115,7 +117,7 @@ namespace Poliza.Migrations
                         .HasComment("Monto asegurado");
 
                     b.Property<string>("NumeroPoliza")
-                        .HasMaxLength(128)
+                        .HasMaxLength(64)
                         .HasColumnType("VARCHAR")
                         .HasColumnOrder(2)
                         .HasComment("Número de póliza");

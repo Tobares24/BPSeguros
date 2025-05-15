@@ -17,7 +17,7 @@ namespace Common.Entities
         public Guid Id { get; private set; } = Guid.NewGuid();
 
         [Column(Order = 2, TypeName = "VARCHAR")]
-        [StringLength(64)]
+        [StringLength(128, MinimumLength = 1, ErrorMessage = "La cédula del asegurado debe tener un máximo de 128 caracteres y un mínimo de 1 caracter")]
         [Comment("Número de póliza")]
         public string? NumeroPoliza { get; set; }
 
@@ -29,6 +29,7 @@ namespace Common.Entities
         public virtual TipoPolizaEntity? TipoPoliza { get; set; }
 
         [Column(Order = 4, TypeName = "VARCHAR")]
+        [StringLength(64, MinimumLength = 1, ErrorMessage = "La cédula del asegurado debe tener un máximo de 64 caracteres y un mínimo de 1 caracter")]
         [Comment("Cédula del asegurado")]
         public string? CedulaAsegurado { get; set; }
 
@@ -38,7 +39,7 @@ namespace Common.Entities
 
         [Column(Order = 5, TypeName = "DECIMAL(18, 2)")]
         [Comment("Monto asegurado")]
-        public decimal MontoAsegurado { get; set; }
+        public decimal? MontoAsegurado { get; set; }
 
         [Column(Order = 6, TypeName = "DATETIME")]
         [Comment("Fecha de vencimiento de la póliza")]
@@ -46,7 +47,7 @@ namespace Common.Entities
 
         [Column(Order = 7, TypeName = "DATETIME")]
         [Comment("Fecha de emisión de la póliza")]
-        public DateTime FechaEmision { get; set; }
+        public DateTime? FechaEmision { get; set; }
 
         [Column(Order = 8, TypeName = "UNIQUEIDENTIFIER")]
         [Comment("Coberturas de la póliza")]
@@ -64,18 +65,18 @@ namespace Common.Entities
 
         [Column(Order = 10, TypeName = "DECIMAL(18, 2)")]
         [Comment("Prima de la póliza")]
-        public decimal Prima { get; set; }
+        public decimal? Prima { get; set; }
 
         [Column(Order = 11, TypeName = "DATETIME")]
         [Comment("Periodo de cobertura de la póliza")]
-        public DateTime Periodo { get; set; }
+        public DateTime? Periodo { get; set; }
 
         [Column(Order = 12, TypeName = "DATETIME")]
         [Comment("Fecha de inclusión de la póliza")]
-        public DateTime FechaInclusion { get; set; }
+        public DateTime? FechaInclusion { get; set; }
 
         [Column(Order = 13, TypeName = "VARCHAR")]
-        [StringLength(150)]
+        [StringLength(128, MinimumLength = 1, ErrorMessage = "La aseguradora debe tener un máximo de 128 caracteres y un mínimo de 1 caracter")]
         [Comment("Nombre de la aseguradora")]
         public string? Aseguradora { get; set; }
 

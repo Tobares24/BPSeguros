@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Poliza.Entities;
 
@@ -11,9 +12,11 @@ using Poliza.Entities;
 namespace Poliza.Migrations
 {
     [DbContext(typeof(PolizaDbContext))]
-    partial class PolizaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250515061327_202505150013")]
+    partial class _202505150013
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,13 +66,12 @@ namespace Poliza.Migrations
                         .HasComment("Identificador de la póliza");
 
                     b.Property<string>("Aseguradora")
-                        .HasMaxLength(128)
+                        .HasMaxLength(150)
                         .HasColumnType("VARCHAR")
                         .HasColumnOrder(13)
                         .HasComment("Nombre de la aseguradora");
 
                     b.Property<string>("CedulaAsegurado")
-                        .HasMaxLength(64)
                         .HasColumnType("VARCHAR")
                         .HasColumnOrder(4)
                         .HasComment("Cédula del asegurado");
@@ -79,12 +81,12 @@ namespace Poliza.Migrations
                         .HasColumnOrder(14)
                         .HasComment("Indicador de borrado lógico");
 
-                    b.Property<DateTime?>("FechaEmision")
+                    b.Property<DateTime>("FechaEmision")
                         .HasColumnType("DATETIME")
                         .HasColumnOrder(7)
                         .HasComment("Fecha de emisión de la póliza");
 
-                    b.Property<DateTime?>("FechaInclusion")
+                    b.Property<DateTime>("FechaInclusion")
                         .HasColumnType("DATETIME")
                         .HasColumnOrder(12)
                         .HasComment("Fecha de inclusión de la póliza");
@@ -115,12 +117,12 @@ namespace Poliza.Migrations
                         .HasComment("Monto asegurado");
 
                     b.Property<string>("NumeroPoliza")
-                        .HasMaxLength(128)
+                        .HasMaxLength(64)
                         .HasColumnType("VARCHAR")
                         .HasColumnOrder(2)
                         .HasComment("Número de póliza");
 
-                    b.Property<DateTime?>("Periodo")
+                    b.Property<DateTime>("Periodo")
                         .HasColumnType("DATETIME")
                         .HasColumnOrder(11)
                         .HasComment("Periodo de cobertura de la póliza");

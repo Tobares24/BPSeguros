@@ -17,7 +17,12 @@ namespace Common.Services
 
         public T ConvertToObject<T>(string json)
         {
-            return JsonSerializer.Deserialize<T>(json)!;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            return JsonSerializer.Deserialize<T>(json, options)!;
         }
 
         public async Task<T> RequestToObjectAsync<T>(HttpContext httpContext)
@@ -48,7 +53,7 @@ namespace Common.Services
             catch (Exception ex)
             {
                 _logger.LogError($"{httpContext.TraceIdentifier} - ArgosException: {ex.ToString()}");
-                throw new BPSegurosException(500, "An error occurred while trying to convert the request to an object", ex);
+                throw new BPSegurosException(500, "Ocurrió un error al intentar convertir la solicitud a un objeto", ex);
             }
             finally
             {

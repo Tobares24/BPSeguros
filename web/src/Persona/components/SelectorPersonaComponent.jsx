@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { AlertaService } from "../../Services/AlertaService";
 import { SelectorComponent } from "../../components/SelectorComponent";
 import PersonaService from "../../Services/PersonaService";
@@ -13,9 +13,9 @@ export const SelectorPersonaComponent = ({
   error = "",
   deshabilitar = false,
 }) => {
-  const [filtro, setFiltro] = useState(valorSeleccionado);
-  const [personas, setPersonas] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [personas, setPersonas] = useState([]);
+  const [filtro, setFiltro] = useState(valorSeleccionado);
 
   const personaService = new PersonaService();
 
@@ -60,16 +60,24 @@ export const SelectorPersonaComponent = ({
     return nuevosDatos;
   };
 
-  const handleSelect = (selected) => {
+  const handleSelect = (event) => {
+    const selectedValue = event.target.value;
+
     setValorSeleccionado((prevData) => ({
       ...prevData,
-      [namePersona]: selected,
+      [namePersona]: selectedValue,
     }));
   };
 
   useEffect(() => {
     buscarPersonas();
   }, [filtro]);
+
+  useEffect(() => {
+    if (valorSeleccionado) {
+      setFiltro(valorSeleccionado === "null" ? "" : valorSeleccionado);
+    }
+  }, [valorSeleccionado]);
 
   return (
     <div>

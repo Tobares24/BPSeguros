@@ -31,7 +31,7 @@ namespace Common.Services
 
                 if (baseUrl == null)
                 {
-                    throw new BPSegurosException(400, "No se ha configurado la URL");
+                    throw new BPSegurosException(400, "No se ha configurado la URL.");
                 }
 
                 HttpResponseMessage responseMessage = await _apiService.GetHttpResponseMessage(traceId, baseUrl, $"/{controller}/{id}");

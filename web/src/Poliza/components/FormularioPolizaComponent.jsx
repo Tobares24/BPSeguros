@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "../../hooks/useForm";
 import { SpinnerComponent } from "../../components/SpinnerComponent";
 import { FormularioComponent } from "../../components/FormularioComponent";
@@ -30,11 +30,11 @@ const initialForm = {
 };
 
 const initialValidateModel = {
-  numeroPoliza: "",
-  idTipoPoliza: "",
-  cedulaAsegurado: "",
-  fechaVencimiento: "",
-  idPolizaEstado: "",
+  numeroPoliza: false,
+  idTipoPoliza: false,
+  cedulaAsegurado: false,
+  fechaVencimiento: false,
+  idPolizaEstado: false,
 };
 
 const initialErrorModel = {
@@ -79,6 +79,10 @@ export const FormularioPolizaComponent = ({
         formState.fechaVencimiento
       );
       const periodo = formatearFechaGuardar(formState.periodo);
+      const montoAsegurado = formState.montoAsegurado
+        ? Number(formState.montoAsegurado)
+        : 0;
+      const prima = formState.prima ? Number(formState.prima) : 0;
 
       const nuevoObjeto = {
         ...formState,
@@ -86,6 +90,8 @@ export const FormularioPolizaComponent = ({
         fechaInclusion,
         fechaVencimiento,
         periodo,
+        montoAsegurado,
+        prima,
       };
 
       await polizaService.crear(nuevoObjeto);
@@ -101,8 +107,21 @@ export const FormularioPolizaComponent = ({
   };
 
   const setState = () => {
-    onResetForm();
     onCancel(true);
+    onResetForm();
+  };
+
+  const onSetRequeridos = (name) => {
+    if (formState[name]) {
+      setValidateModel((prevData) => ({
+        ...prevData,
+        [name]: false,
+      }));
+      setErrorModel((prevData) => ({
+        ...prevData,
+        [name]: "",
+      }));
+    }
   };
 
   const onSubmit = (event) => {
@@ -114,7 +133,7 @@ export const FormularioPolizaComponent = ({
 
     AlertaService.confirmation(
       "Advertencia",
-      "¿Está seguro que desea guardar la persona?",
+      "¿Está seguro que desea guardar la póliza?",
       async (respuesta) => {
         if (respuesta) {
           if (tipoAccion === ACCION_CREAR) {
@@ -140,6 +159,14 @@ export const FormularioPolizaComponent = ({
     );
   };
 
+  useEffect(() => {
+    if (id) {
+      setTipoAccion(ACCION_MODIFICAR);
+      setDeshabilitar(true);
+      // obtenerPorId();
+    }
+  }, [id]);
+
   return (
     <>
       <SpinnerComponent show={cargando} />
@@ -148,17 +175,22 @@ export const FormularioPolizaComponent = ({
           <SelectorTipoPolizaComponent
             isRequired={true}
             nameTipoPoliza="idTipoPoliza"
-            setValorSeleccionado={setFormState}
+            setValorSeleccionado={(valor) => {
+              setFormState(valor);
+              onSetRequeridos("idTipoPoliza");
+            }}
             valorSeleccionado={formState.idTipoPoliza}
             error={errorModel.idTipoPoliza}
-            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
           <SelectorPersonaComponent
             isRequired={true}
-            nameTipoPoliza="cedulaAsegurado"
-            setValorSeleccionado={setFormState}
+            namePersona="cedulaAsegurado"
+            setValorSeleccionado={(valor) => {
+              setFormState(valor);
+              onSetRequeridos("cedulaAsegurado");
+            }}
             valorSeleccionado={formState.cedulaAsegurado}
             error={errorModel.cedulaAsegurado}
             deshabilitar={deshabilitar}
@@ -173,7 +205,6 @@ export const FormularioPolizaComponent = ({
             value={formState.numeroPoliza}
             requerido={true}
             error={errorModel.numeroPoliza}
-            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
@@ -192,6 +223,8 @@ export const FormularioPolizaComponent = ({
             value={formState.fechaVencimiento}
             onChange={onInputChange}
             name={"fechaVencimiento"}
+            error={errorModel.fechaVencimiento}
+            requerido={true}
           />
         </div>
         <div className="col-6">
@@ -204,22 +237,22 @@ export const FormularioPolizaComponent = ({
         </div>
         <div className="col-6">
           <SelectorCoberturaComponent
-            isRequired={true}
-            nameTipoPoliza="idCobertura"
+            nameCobertura="idCobertura"
             setValorSeleccionado={setFormState}
             valorSeleccionado={formState.idCobertura}
             error={errorModel.idCobertura}
-            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
           <SelectorEstadoComponent
             isRequired={true}
-            nameTipoPoliza="idPolizaEstado"
-            setValorSeleccionado={setFormState}
+            nameEstado="idPolizaEstado"
+            setValorSeleccionado={(valor) => {
+              setFormState(valor);
+              onSetRequeridos("idPolizaEstado");
+            }}
             valorSeleccionado={formState.idPolizaEstado}
             error={errorModel.idPolizaEstado}
-            deshabilitar={deshabilitar}
           />
         </div>
         <div className="col-6">
@@ -256,7 +289,6 @@ export const FormularioPolizaComponent = ({
             placeholder={"Aseguradora"}
             value={formState.aseguradora}
             error={errorModel.aseguradora}
-            deshabilitar={deshabilitar}
           />
         </div>
       </FormularioComponent>
