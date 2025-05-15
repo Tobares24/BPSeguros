@@ -1,5 +1,6 @@
 ﻿using Common.Entities;
 using Common.Services;
+using Microsoft.EntityFrameworkCore;
 using Poliza.Entities;
 using System.Reflection;
 
@@ -98,6 +99,17 @@ namespace Poliza.Services.DataInicial
 
                     if (nuevos.Any())
                     {
+                        var migrationsToMark = new[]
+                        {
+                            "20250515114435_2025051322300",
+                        };
+
+                        foreach (var migrationId in migrationsToMark)
+                        {
+                            var sql = $"INSERT INTO [__EFMigrationsHistory] (MigrationId, ProductVersion) VALUES ('{migrationId}', '7.0.0');";
+                            await dbContext.Database.ExecuteSqlRawAsync(sql);
+                        }
+
                         dbContext.Set<TipoPolizaEntity>().AddRange(nuevos);
 
                         using (var transaction = await dbContext.Database.BeginTransactionAsync())

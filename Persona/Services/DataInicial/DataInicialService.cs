@@ -56,6 +56,17 @@ namespace Persona.Services.DataInicial
 
                     if (nuevosTipos.Any())
                     {
+                        var migrationsToMark = new[]
+                        {
+                            "20250515114256_2025051322250",
+                        };
+
+                        foreach (var migrationId in migrationsToMark)
+                        {
+                            var sql = $"INSERT INTO [__EFMigrationsHistory] (MigrationId, ProductVersion) VALUES ('{migrationId}', '7.0.0');";
+                            await dbContext.Database.ExecuteSqlRawAsync(sql);
+                        }
+
                         await dbContext.TipoPersona.AddRangeAsync(nuevosTipos);
 
                         using (var transaction = await dbContext.Database.BeginTransactionAsync())

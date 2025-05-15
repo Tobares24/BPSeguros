@@ -69,8 +69,12 @@ var app = builder.Build();
 
 using (var dbContext = app.Services.GetRequiredService<DbContextFactoryService>().CreateDbContext<PersonaDbContext>())
 {
-    await dbContext.Database.EnsureCreatedAsync();
-    await dbContext.Database.MigrateAsync();
+    try
+    {
+        await dbContext.Database.EnsureCreatedAsync();
+        await dbContext.Database.MigrateAsync();
+    }
+    catch (Exception) { }
 }
 
 app.UseHttpsRedirection();

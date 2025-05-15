@@ -15,7 +15,6 @@ namespace Persona.Models.CrearPersona
         [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,128}$", ErrorMessage = "El primer apellido solo puede contener letras y espacios, con una longitud de entre 1 y 128 caracteres.")]
         public string? PrimerApellido { get; set; }
 
-        [Required(ErrorMessage = "El segundo apellido es obligatorio.")]
         [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{1,128}$", ErrorMessage = "El segundo apellido solo puede contener letras y espacios, con una longitud de entre 1 y 128 caracteres.")]
         public string? SegundoApellido { get; set; }
 

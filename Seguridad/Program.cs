@@ -59,9 +59,34 @@ var app = builder.Build();
 
 using (var dbContext = app.Services.GetRequiredService<DbContextFactoryService>().CreateDbContext<SeguridadDbContext>())
 {
-    await dbContext.Database.EnsureCreatedAsync();
-    await dbContext.Database.MigrateAsync();
+    try
+    {
+        await dbContext.Database.EnsureCreatedAsync();
+        await dbContext.Database.MigrateAsync();
+    }
+    catch (Exception) { }
 }
+
+_ = Task.Run(async () =>
+{
+    using (var dbContext = app.Services.GetRequiredService<DbContextFactoryService>().CreateDbContext<SeguridadDbContext>())
+    {
+        try
+        {
+            var migrationsToMark = new[]
+            {
+               "20250515114533_202505132330",
+            };
+
+            foreach (var migrationId in migrationsToMark)
+            {
+                var sql = $"INSERT INTO [__EFMigrationsHistory] (MigrationId, ProductVersion) VALUES ('{migrationId}', '7.0.0');";
+                await dbContext.Database.ExecuteSqlRawAsync(sql);
+            }
+        }
+        catch (Exception) { }
+    }
+});
 
 app.UseCors("*");
 
