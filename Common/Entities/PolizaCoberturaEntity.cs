@@ -12,7 +12,7 @@ namespace Common.Entities
         [Key]
         [Column(Order = 1, TypeName = "UNIQUEIDENTIFIER")]
         [Comment("Identificador del tipo de póliza")]
-        public Guid Id { get; private set; }
+        public Guid Id { get; private set; } = Guid.NewGuid();
 
         [Column(Order = 2, TypeName = "VARCHAR")]
         [StringLength(128)]

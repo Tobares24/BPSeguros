@@ -43,6 +43,20 @@ namespace Poliza.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PolizaPeriodo",
+                schema: "PolizaSchema",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "UNIQUEIDENTIFIER", nullable: false, comment: "Identificador del periodo de póliza"),
+                    Descripcion = table.Column<string>(type: "VARCHAR(128)", maxLength: 128, nullable: true, comment: "Descripción del periodo de póliza"),
+                    EstaEliminado = table.Column<bool>(type: "BIT", nullable: false, comment: "Indicador de borrado lógico")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PolizaPeriodo", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TipoPoliza",
                 schema: "PolizaSchema",
                 columns: table => new
@@ -74,11 +88,19 @@ namespace Poliza.Migrations
                     Periodo = table.Column<DateTime>(type: "DATETIME", nullable: false, comment: "Periodo de cobertura de la póliza"),
                     FechaInclusion = table.Column<DateTime>(type: "DATETIME", nullable: false, comment: "Fecha de inclusión de la póliza"),
                     Aseguradora = table.Column<string>(type: "VARCHAR(150)", maxLength: 150, nullable: true, comment: "Nombre de la aseguradora"),
+                    IdPeriodo = table.Column<Guid>(type: "UNIQUEIDENTIFIER", nullable: false, comment: "Periodo de la póliza"),
                     EstaEliminado = table.Column<bool>(type: "BIT", nullable: false, comment: "Indicador de borrado lógico")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Poliza_Id", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PolizaTable_PolizaPeriodo_IdPeriodo",
+                        column: x => x.IdPeriodo,
+                        principalSchema: "PolizaSchema",
+                        principalTable: "PolizaPeriodo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Poliza_PolizaCobertura",
                         column: x => x.IdCobertura,
@@ -115,7 +137,7 @@ namespace Poliza.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "TipoPolizaBusquedaIndex",
+                name: "PolizaEstadoBusquedaIndex",
                 schema: "PolizaSchema",
                 table: "PolizaEstadoTable",
                 columns: new[] { "Descripcion", "EstaEliminado" },
@@ -123,9 +145,24 @@ namespace Poliza.Migrations
                 filter: "[Descripcion] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "TipoPolizaIndex",
+                name: "PolizaEstadoIndex",
                 schema: "PolizaSchema",
                 table: "PolizaEstadoTable",
+                column: "Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "PolizaPeriodoBusquedaIndex",
+                schema: "PolizaSchema",
+                table: "PolizaPeriodo",
+                columns: new[] { "Descripcion", "EstaEliminado" },
+                unique: true,
+                filter: "[Descripcion] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "PolizaPeriodoIndex",
+                schema: "PolizaSchema",
+                table: "PolizaPeriodo",
                 column: "Id",
                 unique: true);
 
@@ -134,6 +171,12 @@ namespace Poliza.Migrations
                 schema: "PolizaSchema",
                 table: "PolizaTable",
                 column: "IdCobertura");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PolizaTable_IdPeriodo",
+                schema: "PolizaSchema",
+                table: "PolizaTable",
+                column: "IdPeriodo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PolizaTable_IdPolizaEstado",
@@ -186,6 +229,10 @@ namespace Poliza.Migrations
         {
             migrationBuilder.DropTable(
                 name: "PolizaTable",
+                schema: "PolizaSchema");
+
+            migrationBuilder.DropTable(
+                name: "PolizaPeriodo",
                 schema: "PolizaSchema");
 
             migrationBuilder.DropTable(

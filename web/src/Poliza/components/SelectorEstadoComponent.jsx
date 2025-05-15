@@ -2,12 +2,12 @@
 import { useEffect, useState } from "react";
 import { AlertaService } from "../../Services/AlertaService";
 import { SelectorComponent } from "../../components/SelectorComponent";
-import PersonaService from "../../Services/PersonaService";
+import PolizaService from "../../Services/PolizaService";
 
-export const SelectorTipoPersonaComponent = ({
+export const SelectorEstadoComponent = ({
   isRequired = false,
-  label = "Tipo Persona",
-  nameTipoPersona = "",
+  label = "Estado Póliza",
+  nameEstado = "",
   setValorSeleccionado = () => {},
   valorSeleccionado = "",
   error = "",
@@ -15,14 +15,14 @@ export const SelectorTipoPersonaComponent = ({
 }) => {
   const [cargando, setCargando] = useState(false);
   const [filtro, setFiltro] = useState(valorSeleccionado);
-  const [tipoPersonas, setTipoPersonas] = useState([]);
+  const [data, setData] = useState([]);
 
-  const personaService = new PersonaService();
+  const polizaService = new PolizaService();
 
-  const buscarTipoPersonas = async () => {
+  const buscarTipoPolizas = async () => {
     setCargando(true);
     try {
-      const data = await personaService.listaSelectorTipoPersona(filtro);
+      const data = await polizaService.listaSelectorPolizaEstado(filtro);
 
       const datosTransformados = transformarDatos(data);
 
@@ -34,7 +34,7 @@ export const SelectorTipoPersonaComponent = ({
         ...datosTransformados,
       ];
 
-      setTipoPersonas(nuevosDatos);
+      setData(nuevosDatos);
     } catch (e) {
       AlertaService.error(
         "Error",
@@ -51,7 +51,7 @@ export const SelectorTipoPersonaComponent = ({
     datos?.map((item) => {
       const nuevosRegistros = {
         value: item?.id,
-        label: item?.tipoPersona,
+        label: item?.descripcion,
       };
 
       nuevosDatos.push(nuevosRegistros);
@@ -65,18 +65,18 @@ export const SelectorTipoPersonaComponent = ({
 
     setValorSeleccionado((prevData) => ({
       ...prevData,
-      [nameTipoPersona]: selectedValue,
+      [nameEstado]: selectedValue,
     }));
   };
 
   useEffect(() => {
-    buscarTipoPersonas();
+    buscarTipoPolizas();
   }, [filtro]);
 
   return (
     <div>
       <SelectorComponent
-        options={tipoPersonas}
+        options={data}
         loading={cargando}
         onSearch={setFiltro}
         value={valorSeleccionado}

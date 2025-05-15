@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { alertService } from "../../Services/AlertaService";
+import { AlertaService } from "../../Services/AlertaService";
 import { SelectorComponent } from "../../components/SelectorComponent";
 import { useEffect, useState } from "react";
 import PersonaService from "../../Services/PersonaService";
@@ -21,7 +21,7 @@ export const SelectorPersonaComponent = ({
       const data = await personaService.listaSelectorPersona(filtro);
       setPersonas(data);
     } catch (e) {
-      alertService.error(
+      AlertaService.error(
         "Error",
         e?.Message ?? "Ha ocurrido un error interno."
       );
