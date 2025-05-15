@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Poliza.Services;
 using Poliza.Services.ActualizarPoliza;
 using Poliza.Services.EliminarPoliza;
@@ -12,6 +13,7 @@ namespace Poliza.Controllers
 {
     [Route("api/polizas")]
     [ApiController]
+    [Authorize]
     public class PolizaController : ControllerBase
     {
         [HttpPost]

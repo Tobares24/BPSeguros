@@ -7,6 +7,7 @@ export default class PersonaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(`${API_PERSONA}`, {
@@ -27,6 +28,7 @@ export default class PersonaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(
@@ -55,6 +57,7 @@ export default class PersonaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(
@@ -91,6 +94,7 @@ export default class PersonaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const params = new URLSearchParams();
@@ -120,6 +124,7 @@ export default class PersonaService {
   async obtenerPorId(cedulaAsegurado) {
     const headers = {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`,
     };
 
     const response = await fetch(`${API_PERSONA}/${cedulaAsegurado}`, {
@@ -141,6 +146,7 @@ export default class PersonaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(`${API_PERSONA}/${cedulaAsegurado}`, {
@@ -160,6 +166,7 @@ export default class PersonaService {
   async eliminar(cedulaAsegurado) {
     const headers = {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`,
     };
 
     const response = await fetch(`${API_PERSONA}/${cedulaAsegurado}`, {

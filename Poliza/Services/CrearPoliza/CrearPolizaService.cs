@@ -36,6 +36,8 @@ namespace Poliza.Services
 
                 string traceId = httpContext.TraceIdentifier;
 
+                string token = httpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
                 CrearPolizaRequestModel requestModel = await _jsonService.RequestToObjectAsync<CrearPolizaRequestModel>(httpContext);
 
                 _validationService.Validate(requestModel, traceId);
@@ -43,7 +45,7 @@ namespace Poliza.Services
                 try
                 {
                     var personaResponseJson = await _internalService.GetEntityById<object>(httpContext.TraceIdentifier,
-                       "api/personas", requestModel.CedulaAsegurado!, "persona");
+                       "api/personas", requestModel.CedulaAsegurado!, "persona", token);
 
                     ObtenerPorIdResponseModel personaObtenida = _jsonService.ConvertToObject<ObtenerPorIdResponseModel>(personaResponseJson!.ToString()!);
                 }

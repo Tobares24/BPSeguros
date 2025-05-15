@@ -3,7 +3,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Seguridad.Entities;
-using Seguridad.Services;
+using Seguridad.Services.CrearUsuario;
+using Seguridad.Services.Login;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +17,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<JWTService>();
 builder.Services.AddSingleton<DbContextFactoryService>();
-builder.Services.AddSingleton<PasswordHasherService>();
-builder.Services.AddSingleton<CrearUsuarioService>();
-builder.Services.AddSingleton<RequestModelValidationService>();
-builder.Services.AddSingleton<JsonService>();
+builder.Services.AddTransient<PasswordHasherService>();
+builder.Services.AddTransient<CrearUsuarioService>();
+builder.Services.AddTransient<RequestModelValidationService>();
+builder.Services.AddTransient<JsonService>();
+builder.Services.AddTransient<LoginService>();
 builder.Services.AddDbContext<SeguridadDbContext>(options =>
 {
     SqlConnection sqlConnection = new SqlConnection();

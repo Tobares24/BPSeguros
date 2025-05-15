@@ -16,7 +16,7 @@ namespace Common.Services
             _apiService = apiService;
         }
 
-        public async Task<T?> GetEntityById<T>(string traceId, string controller, string id, string microService)
+        public async Task<T?> GetEntityById<T>(string traceId, string controller, string id, string microService, string token)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace Common.Services
                     throw new BPSegurosException(400, "No se ha configurado la URL.");
                 }
 
-                HttpResponseMessage responseMessage = await _apiService.GetHttpResponseMessage(traceId, baseUrl, $"/{controller}/{id}");
+                HttpResponseMessage responseMessage = await _apiService.GetHttpResponseMessage(traceId, baseUrl, $"/{controller}/{id}", token);
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     string json = await responseMessage.Content.ReadAsStringAsync();

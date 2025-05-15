@@ -4,9 +4,10 @@ import { RegistrarComponent } from "./Seguridad/components/RegistrarComponent";
 import { PersonaComponent } from "./Persona/components/PersonaComponent";
 import { PolizaComponent } from "./Poliza/components/PolizaComponent";
 import { SideBarComponent } from "./components/SideBarComponent";
+import { InicioComponent } from "./components/InicioComponent";
 
 const isAuthenticated = () => {
-  return !!localStorage.getItem("token");
+  return !!sessionStorage.getItem("token");
 };
 
 const PrivateRoute = ({ children }) => {
@@ -19,31 +20,24 @@ export const AppComponent = () => {
       <Routes>
         <Route path="/login" element={<IniciarSesionComponent />} />
         <Route path="/registro" element={<RegistrarComponent />} />
-
         <Route
-          path="/*"
+          path="*"
           element={
             <PrivateRoute>
-              <SideBarComponent>
-                <div className="container mt-4">
-                  <Routes>
-                    <Route path="persona" element={<PersonaComponent />} />
-                    <Route path="polizas" element={<PolizaComponent />} />
-                    <Route
-                      path="*"
-                      element={<Navigate to="persona" replace />}
-                    />
-                  </Routes>
-                </div>
-              </SideBarComponent>
+              <SideBarComponent />
             </PrivateRoute>
           }
-        />
+        >
+          <Route path="inicio" element={<InicioComponent />} />
+          <Route path="persona" element={<PersonaComponent />} />
+          <Route path="poliza" element={<PolizaComponent />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
         <Route
           path="/"
           element={
             isAuthenticated() ? (
-              <Navigate to="/persona" replace />
+              <Navigate to="/" replace />
             ) : (
               <Navigate to="/login" replace />
             )

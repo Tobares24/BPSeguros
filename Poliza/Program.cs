@@ -1,6 +1,7 @@
 using Common.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Poliza.Entities;
 using Poliza.Services;
 using Poliza.Services.ActualizarPoliza;
@@ -11,6 +12,7 @@ using Poliza.Services.ListaSelectorPolizaEstado;
 using Poliza.Services.ListaSelectorTipoPoliza;
 using Poliza.Services.ObtenerPoliza;
 using Poliza.Services.ObtenerPorId;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,21 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = Environment.GetEnvironmentVariable("ISSUER"),
+            ValidAudience = Environment.GetEnvironmentVariable("AUDIENCE"),
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET_KEY")!))
+        };
+    });
 
 var app = builder.Build();
 
@@ -58,6 +75,7 @@ using (var dbContext = app.Services.GetRequiredService<DbContextFactoryService>(
 
 app.UseHttpsRedirection();
 app.UseCors("*");
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

@@ -33,6 +33,8 @@ namespace Poliza.Services.ObtenerPoliza
 
                 string traceId = httpContext.TraceIdentifier;
 
+                string token = httpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
                 ObtenerPolizaResponseModel responseModel = new()
                 {
                     Registros = new(),
@@ -77,7 +79,7 @@ namespace Poliza.Services.ObtenerPoliza
                     List<Task<object?>> tareas = new();
                     foreach (var item in registros)
                     {
-                        tareas.Add(_internalService.GetEntityById<object>(httpContext.TraceIdentifier, "api/personas", item.CedulaAsegurado!, "persona"));
+                        tareas.Add(_internalService.GetEntityById<object>(httpContext.TraceIdentifier, "api/personas", item.CedulaAsegurado!, "persona", token));
                     }
 
                     var listaPersonasObtenidas = await Task.WhenAll(tareas);

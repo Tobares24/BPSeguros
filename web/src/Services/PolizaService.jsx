@@ -7,6 +7,7 @@ export default class PolizaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(`${API_POLIZA}`, {
@@ -34,6 +35,7 @@ export default class PolizaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const params = new URLSearchParams();
@@ -62,6 +64,7 @@ export default class PolizaService {
   async obtenerPorId(id) {
     const headers = {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`,
     };
 
     const response = await fetch(`${API_POLIZA}/${id}`, {
@@ -83,6 +86,7 @@ export default class PolizaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(
@@ -111,6 +115,7 @@ export default class PolizaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(
@@ -139,6 +144,7 @@ export default class PolizaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(
@@ -167,6 +173,7 @@ export default class PolizaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(
@@ -195,6 +202,7 @@ export default class PolizaService {
     try {
       const headers = {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       };
 
       const response = await fetch(`${API_POLIZA}/${id}`, {
@@ -214,6 +222,7 @@ export default class PolizaService {
   async eliminar(id) {
     const headers = {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`,
     };
 
     const response = await fetch(`${API_POLIZA}/${id}`, {

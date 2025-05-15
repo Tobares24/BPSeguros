@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Persona.Services.ActualizarPersona;
 using Persona.Services.CrearPersona;
 using Persona.Services.EliminarPersona;
@@ -11,6 +12,7 @@ namespace Persona.Controllers
 {
     [Route("api/personas")]
     [ApiController]
+    [Authorize]
     public class PersonaController : ControllerBase
     {
         [HttpPost]

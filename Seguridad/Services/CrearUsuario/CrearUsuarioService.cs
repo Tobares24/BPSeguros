@@ -8,7 +8,7 @@ using Seguridad.Models.CrearUsuario;
 using System.Net;
 using System.Reflection;
 
-namespace Seguridad.Services
+namespace Seguridad.Services.CrearUsuario
 {
     public class CrearUsuarioService
     {
@@ -25,7 +25,7 @@ namespace Seguridad.Services
             _dbContextFactoryService = dbContextFactoryService;
             _jsonService = jsonService;
             _validationService = validationService;
-            _passwordHasherService=passwordHasherService;
+            _passwordHasherService = passwordHasherService;
         }
 
         public async Task<IActionResult> Crear(HttpContext httpContext)

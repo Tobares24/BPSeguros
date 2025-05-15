@@ -18,7 +18,11 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SQL_SERVER_CONNECTION_STRING": "Server=localhost;Database=PersonaDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
-        "PERSONA_ENDPOINT": "https://localhost:7257"
+        "PERSONA_ENDPOINT": "https://localhost:7257",
+        "SECRET_KEY": "D9f@2!eN7#kXv5qLpZ6rTbC$uEwY1oM%",
+        "ISSUER": "SISTEMA",
+        "AUDIENCE": "N7#kXv5qLpZ6rTbC",
+        "EXPIRE_HOURS": "12"
       }
     }
   }

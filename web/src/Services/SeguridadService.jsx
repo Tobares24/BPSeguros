@@ -22,4 +22,30 @@ export default class SeguridadService {
       throw error;
     }
   }
+
+  async login({ email, password }) {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const params = new URLSearchParams();
+
+      params.append("email", email);
+      params.append("password", password);
+
+      const response = await fetch(`${API_SEGURIDAD}?${params.toString()}`, {
+        method: "GET",
+        credentials: "include",
+        headers,
+      });
+
+      const responsObj = await ResponseService.handle(response);
+      
+      return responsObj;
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+      throw error;
+    }
+  }
 }

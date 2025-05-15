@@ -18,7 +18,11 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SQL_SERVER_CONNECTION_STRING": "Server=localhost;Database=PolizaDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
-        "POLIZA_ENDPOINT": "https://localhost:7029"
+        "POLIZA_ENDPOINT": "https://localhost:7029",
+        "SECRET_KEY": "D9f@2!eN7#kXv5qLpZ6rTbC$uEwY1oM%",
+        "ISSUER": "SISTEMA",
+        "AUDIENCE": "N7#kXv5qLpZ6rTbC",
+        "EXPIRE_HOURS": "12"
       }
     }
   }
