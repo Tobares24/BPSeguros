@@ -9,6 +9,11 @@ export const PolizaComponent = () => {
   const [refrescarTabla, setRefrescarTabla] = useState(false);
   const [idSeleccionado, setIdSeleccionado] = useState("");
 
+  const onSetEstados = () => {
+    setMostrarModal(false);
+    setIdSeleccionado("");
+  };
+
   const onCancelar = (event) => {
     event.preventDefault();
 
@@ -17,8 +22,7 @@ export const PolizaComponent = () => {
       "¿Está seguro que desea salir?",
       (respuesta) => {
         if (respuesta) {
-          setMostrarModal(false);
-          setIdSeleccionado("");
+          onSetEstados();
         }
       }
     );
@@ -52,7 +56,7 @@ export const PolizaComponent = () => {
             tamnnioModal="modal-xl"
           >
             <FormularioPolizaComponent
-              onCancel={() => setMostrarModal(false)}
+              onCancel={onSetEstados}
               setRefrescarTabla={setRefrescarTabla}
               id={idSeleccionado}
             />

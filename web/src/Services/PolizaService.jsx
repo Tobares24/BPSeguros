@@ -59,6 +59,26 @@ export default class PolizaService {
     }
   }
 
+  async obtenerPorId(id) {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const response = await fetch(`${API_POLIZA}/${id}`, {
+      method: "GET",
+      headers,
+      credentials: "include",
+    });
+
+    try {
+      const responseObject = await ResponseService.handle(response);
+      return responseObject;
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+      throw error;
+    }
+  }
+
   async listaSelectorTipoPoliza(filtroBusqueda) {
     try {
       const headers = {
@@ -168,6 +188,45 @@ export default class PolizaService {
         "Error al obtener los periodos de las pólizas del selector.",
         error?.message
       );
+    }
+  }
+
+  async actualizar(modelo, id) {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const response = await fetch(`${API_POLIZA}/${id}`, {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify(modelo),
+        headers,
+      });
+
+      await ResponseService.handleNoContent(response);
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+      throw error;
+    }
+  }
+
+  async eliminar(id) {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const response = await fetch(`${API_POLIZA}/${id}`, {
+      method: "DELETE",
+      headers,
+      credentials: "include",
+    });
+
+    try {
+      await ResponseService.handleNoContent(response);
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+      throw error;
     }
   }
 }

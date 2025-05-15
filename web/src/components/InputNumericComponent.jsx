@@ -31,7 +31,7 @@ export const InputNumericComponent = ({
         className="form-control"
         placeholder={placeholder}
         name={name}
-        value={valor}
+        value={valor ?? ""}
         onChange={handleChange}
       />
     </div>

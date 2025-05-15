@@ -3,11 +3,14 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Poliza.Entities;
 using Poliza.Services;
+using Poliza.Services.ActualizarPoliza;
 using Poliza.Services.DataInicial;
+using Poliza.Services.EliminarPoliza;
 using Poliza.Services.ListaSelectorPolizaCobertura;
 using Poliza.Services.ListaSelectorPolizaEstado;
 using Poliza.Services.ListaSelectorTipoPoliza;
 using Poliza.Services.ObtenerPoliza;
+using Poliza.Services.ObtenerPorId;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +27,9 @@ builder.Services.AddSingleton<ListaSelectorPolizaCoberturaService>();
 builder.Services.AddSingleton<ListaSelectorPolizaEstadoService>();
 builder.Services.AddTransient<CrearPolizaService>();
 builder.Services.AddTransient<ObtenerPolizaService>();
+builder.Services.AddTransient<ActualizarPolizaService>();
+builder.Services.AddTransient<EliminarPolizaService>();
+builder.Services.AddTransient<ObtenerPorIdService>();
 builder.Services.AddDbContext<PolizaDbContext>(options =>
 {
     SqlConnection sqlConnection = new SqlConnection();

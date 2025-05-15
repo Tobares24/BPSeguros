@@ -1,9 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useForm } from "../../hooks/useForm";
 import { AlertaService } from "../../Services/AlertaService";
 import { ButtonComponent } from "../../components/ButtonComponent";
 import { DatePickerComponent } from "../../components/DatePickerComponent";
-import { formatearFechaGuardar } from "../../utils/FormateadorFecha";
+import {
+  formatearFechaGuardar,
+  formatearFechaISO,
+} from "../../utils/FormateadorFecha";
 import { FormularioComponent } from "../../components/FormularioComponent";
 import { InputComponent } from "../../components/InputComponent";
 import { InputNumericComponent } from "../../components/InputNumericComponent";
@@ -106,6 +110,69 @@ export const FormularioPolizaComponent = ({
     }
   };
 
+  const obtenerPorId = async () => {
+    setCargando(true);
+    try {
+      const objeto = await polizaService.obtenerPorId(id);
+
+      const fechaEmision = formatearFechaISO(objeto?.fechaEmision);
+      const fechaInclusion = formatearFechaISO(objeto?.fechaInclusion);
+      const fechaVencimiento = formatearFechaISO(objeto?.fechaVencimiento);
+
+      const nuevoObjeto = {
+        ...objeto,
+        fechaEmision,
+        fechaInclusion,
+        fechaVencimiento,
+      };
+
+      setFormState(nuevoObjeto);
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const actualizarPersona = async () => {
+    setCargando(true);
+    try {
+      const fechaEmision = formatearFechaGuardar(formState.fechaEmision);
+      const fechaInclusion = formatearFechaGuardar(formState.fechaInclusion);
+      const fechaVencimiento = formatearFechaGuardar(
+        formState.fechaVencimiento
+      );
+      const periodo = formatearFechaGuardar(formState.periodo);
+      const montoAsegurado = formState.montoAsegurado
+        ? Number(formState.montoAsegurado)
+        : 0;
+      const prima = formState.prima ? Number(formState.prima) : 0;
+
+      const nuevoObjeto = {
+        ...formState,
+        fechaEmision,
+        fechaInclusion,
+        fechaVencimiento,
+        periodo,
+        montoAsegurado,
+        prima,
+      };
+
+      await polizaService.actualizar(nuevoObjeto, id);
+
+      setRefrescarTabla(true);
+      setState();
+      AlertaService.success(
+        "Exitoso",
+        "La póliza ha sido actualizada con éxito."
+      );
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   const setState = () => {
     onCancel(true);
     onResetForm();
@@ -139,6 +206,7 @@ export const FormularioPolizaComponent = ({
           if (tipoAccion === ACCION_CREAR) {
             await crearPoliza();
           } else if (tipoAccion === ACCION_MODIFICAR) {
+            await actualizarPersona();
           }
         }
       }
@@ -163,7 +231,7 @@ export const FormularioPolizaComponent = ({
     if (id) {
       setTipoAccion(ACCION_MODIFICAR);
       setDeshabilitar(true);
-      // obtenerPorId();
+      obtenerPorId();
     }
   }, [id]);
 
@@ -171,18 +239,6 @@ export const FormularioPolizaComponent = ({
     <>
       <SpinnerComponent show={cargando} />
       <FormularioComponent>
-        <div className="col-6">
-          <SelectorTipoPolizaComponent
-            isRequired={true}
-            nameTipoPoliza="idTipoPoliza"
-            setValorSeleccionado={(valor) => {
-              setFormState(valor);
-              onSetRequeridos("idTipoPoliza");
-            }}
-            valorSeleccionado={formState.idTipoPoliza}
-            error={errorModel.idTipoPoliza}
-          />
-        </div>
         <div className="col-6">
           <SelectorPersonaComponent
             isRequired={true}
@@ -194,6 +250,18 @@ export const FormularioPolizaComponent = ({
             valorSeleccionado={formState.cedulaAsegurado}
             error={errorModel.cedulaAsegurado}
             deshabilitar={deshabilitar}
+          />
+        </div>
+        <div className="col-6">
+          <SelectorTipoPolizaComponent
+            isRequired={true}
+            nameTipoPoliza="idTipoPoliza"
+            setValorSeleccionado={(valor) => {
+              setFormState(valor);
+              onSetRequeridos("idTipoPoliza");
+            }}
+            valorSeleccionado={formState.idTipoPoliza}
+            error={errorModel.idTipoPoliza}
           />
         </div>
         <div className="col-6">

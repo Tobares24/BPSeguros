@@ -72,6 +72,18 @@ export const TablaPolizaComponent = ({
     }
   };
 
+  const eliminar = async (id) => {
+    setCargando(true);
+    try {
+      await polizaService.eliminar(id);
+      setRefrescarTabla(true);
+    } catch (error) {
+      AlertaService.error("¡Error!", `${error?.message}`);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   const onSelectChange = (e) => {
     const selectedValue = e.target.value;
     setRegistroPorPagina(Number(selectedValue));
@@ -79,6 +91,19 @@ export const TablaPolizaComponent = ({
 
   const onUpdate = ({ id }) => {
     setIdSeleccionado(id);
+  };
+
+  const onDelete = ({ id }) => {
+    AlertaService.confirmation(
+      "Advertencia",
+      "¿Está seguro que desea eliminar la póliza?",
+      async (respuesta) => {
+        if (respuesta) {
+          await eliminar(id);
+        }
+      },
+      "Eliminar"
+    );
   };
 
   const acciones = [
@@ -92,7 +117,9 @@ export const TablaPolizaComponent = ({
     {
       label: "Eliminar",
       color: "danger",
-      onClick: (objeto) => {},
+      onClick: (objeto) => {
+        onDelete(objeto);
+      },
     },
   ];
 

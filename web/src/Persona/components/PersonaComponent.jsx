@@ -9,6 +9,11 @@ export const PersonaComponent = () => {
   const [refrescarTabla, setRefrescarTabla] = useState(false);
   const [cedulaSeleccionada, setCedulaSeleccionada] = useState("");
 
+  const onSetEstados = () => {
+    setMostrarModal(false);
+    setCedulaSeleccionada("");
+  };
+
   const onCancelar = (event) => {
     event.preventDefault();
 
@@ -17,8 +22,7 @@ export const PersonaComponent = () => {
       "¿Está seguro que desea salir?",
       (respuesta) => {
         if (respuesta) {
-          setMostrarModal(false);
-          setCedulaSeleccionada("");
+          onSetEstados();
         }
       }
     );
@@ -48,7 +52,7 @@ export const PersonaComponent = () => {
         {mostrarModal && (
           <ModalComponent title={"Formulario Persona"} onCancel={onCancelar}>
             <FormularioPersonaComponent
-              onCancel={() => setMostrarModal(false)}
+              onCancel={onSetEstados}
               setRefrescarTabla={setRefrescarTabla}
               cedulaSeleccionada={cedulaSeleccionada}
             />

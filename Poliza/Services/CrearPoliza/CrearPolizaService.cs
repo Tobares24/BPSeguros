@@ -28,7 +28,7 @@ namespace Poliza.Services
             _internalService = internalService;
         }
 
-        public async Task<IActionResult> CrearPoliza(HttpContext httpContext)
+        public async Task<IActionResult> Crear(HttpContext httpContext)
         {
             try
             {
