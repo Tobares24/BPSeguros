@@ -12,7 +12,7 @@ namespace Common.Entities
         [Key]
         [Column(Order = 1, TypeName = "UNIQUEIDENTIFIER")]
         [Comment("Identificador del tipo de póliza")]
-        public Guid Id { get; private set; }
+        public Guid Id { get; private set; } = Guid.NewGuid();
 
         [Column(Order = 2, TypeName = "VARCHAR")]
         [StringLength(512)]
@@ -23,6 +23,6 @@ namespace Common.Entities
         [Comment("Indicador de borrado lógico")]
         public bool EstaEliminado { get; set; }
 
-        public virtual PolizaEntity? PolizaEntity { get; set; }
+        public virtual List<PolizaEntity>? Polizas { get; set; }
     }
 }

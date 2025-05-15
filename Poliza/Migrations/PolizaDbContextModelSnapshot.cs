@@ -22,68 +22,6 @@ namespace Poliza.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Common.Entities.PersonaEntity", b =>
-                {
-                    b.Property<string>("CedulaAsegurado")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnOrder(1)
-                        .HasComment("Cédula del asegurado de la persona");
-
-                    b.Property<bool>("EstaEliminado")
-                        .HasColumnType("BIT")
-                        .HasColumnOrder(7)
-                        .HasComment("Indicador de borrado lógico");
-
-                    b.Property<DateTime?>("FechaNacimiento")
-                        .HasColumnType("DATETIME")
-                        .HasColumnOrder(6)
-                        .HasComment("Fecha de nacimiento de la persona");
-
-                    b.Property<Guid>("IdTipoPersona")
-                        .HasColumnType("UNIQUEIDENTIFIER")
-                        .HasColumnOrder(5)
-                        .HasComment("Identificador de la persona con la que se relaciona la persona");
-
-                    b.Property<string>("Nombre")
-                        .HasMaxLength(512)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnOrder(2)
-                        .HasComment("Nombre de la persona");
-
-                    b.Property<string>("PrimerApellido")
-                        .HasMaxLength(128)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnOrder(3)
-                        .HasComment("Primer apellido de la persona");
-
-                    b.Property<string>("SegundoApellido")
-                        .HasMaxLength(128)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnOrder(4)
-                        .HasComment("Segundo apellido de la persona");
-
-                    b.HasKey("CedulaAsegurado");
-
-                    b.HasIndex("IdTipoPersona")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "EstaEliminado" }, "EstaEliminadoIndex");
-
-                    b.HasIndex(new[] { "IdTipoPersona" }, "IdTipoPersonaIndex");
-
-                    b.HasIndex(new[] { "Nombre" }, "NombreIndex");
-
-                    b.HasIndex(new[] { "CedulaAsegurado" }, "PersonaIndex")
-                        .IsUnique();
-
-                    b.HasIndex(new[] { "PrimerApellido" }, "PrimerApellidoIndex");
-
-                    b.HasIndex(new[] { "SegundoApellido" }, "SegundoApellidoIndex");
-
-                    b.ToTable("PersonaTable", "Persona");
-                });
-
             modelBuilder.Entity("Common.Entities.PolizaCoberturaEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -194,18 +132,9 @@ namespace Poliza.Migrations
                     b.HasKey("Id")
                         .HasName("PK_Poliza_Id");
 
-                    b.HasIndex("CedulaAsegurado")
-                        .IsUnique()
-                        .HasFilter("[CedulaAsegurado] IS NOT NULL");
+                    b.HasIndex("IdCobertura");
 
-                    b.HasIndex("IdCobertura")
-                        .IsUnique();
-
-                    b.HasIndex("IdPolizaEstado")
-                        .IsUnique();
-
-                    b.HasIndex("IdTipoPoliza")
-                        .IsUnique();
+                    b.HasIndex("IdPolizaEstado");
 
                     b.HasIndex(new[] { "CedulaAsegurado" }, "PolizaCedulaAseguradoIndex");
 
@@ -250,33 +179,6 @@ namespace Poliza.Migrations
                     b.ToTable("PolizaEstadoTable", "PolizaSchema");
                 });
 
-            modelBuilder.Entity("Common.Entities.TipoPersonaEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("UNIQUEIDENTIFIER")
-                        .HasColumnOrder(1)
-                        .HasComment("Identificador del catálogo de tipo de persona");
-
-                    b.Property<bool>("EstaEliminado")
-                        .HasColumnType("BIT")
-                        .HasColumnOrder(3)
-                        .HasComment("Indicador de borrado lógico");
-
-                    b.Property<string>("TipoPersona")
-                        .HasMaxLength(64)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnOrder(2)
-                        .HasComment("Tipo de persona");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Id" }, "TipoPersonaIndex")
-                        .IsUnique();
-
-                    b.ToTable("TipoPersonaTable", "Persona");
-                });
-
             modelBuilder.Entity("Common.Entities.TipoPolizaEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -308,44 +210,25 @@ namespace Poliza.Migrations
                     b.ToTable("TipoPoliza", "PolizaSchema");
                 });
 
-            modelBuilder.Entity("Common.Entities.PersonaEntity", b =>
-                {
-                    b.HasOne("Common.Entities.TipoPersonaEntity", "TipoPersona")
-                        .WithOne("Persona")
-                        .HasForeignKey("Common.Entities.PersonaEntity", "IdTipoPersona")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TipoPersona");
-                });
-
             modelBuilder.Entity("Common.Entities.PolizaEntity", b =>
                 {
-                    b.HasOne("Common.Entities.PersonaEntity", "Persona")
-                        .WithOne("Poliza")
-                        .HasForeignKey("Common.Entities.PolizaEntity", "CedulaAsegurado")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .HasConstraintName("FK_Poliza_Persona");
-
                     b.HasOne("Common.Entities.PolizaCoberturaEntity", "PolizaCobertura")
-                        .WithOne("PolizaEntity")
-                        .HasForeignKey("Common.Entities.PolizaEntity", "IdCobertura")
+                        .WithMany("Polizas")
+                        .HasForeignKey("IdCobertura")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_Poliza_PolizaCobertura");
 
                     b.HasOne("Common.Entities.PolizaEstadoEntity", "PolizaEstado")
-                        .WithOne("PolizaEntity")
-                        .HasForeignKey("Common.Entities.PolizaEntity", "IdPolizaEstado")
+                        .WithMany("Polizas")
+                        .HasForeignKey("IdPolizaEstado")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_Poliza_PolizaEstado");
 
                     b.HasOne("Common.Entities.TipoPolizaEntity", "TipoPoliza")
-                        .WithOne("PolizaEntity")
-                        .HasForeignKey("Common.Entities.PolizaEntity", "IdTipoPoliza")
+                        .WithMany("Polizas")
+                        .HasForeignKey("IdTipoPoliza")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_Poliza_TipoPoliza");
-
-                    b.Navigation("Persona");
 
                     b.Navigation("PolizaCobertura");
 
@@ -354,29 +237,19 @@ namespace Poliza.Migrations
                     b.Navigation("TipoPoliza");
                 });
 
-            modelBuilder.Entity("Common.Entities.PersonaEntity", b =>
-                {
-                    b.Navigation("Poliza");
-                });
-
             modelBuilder.Entity("Common.Entities.PolizaCoberturaEntity", b =>
                 {
-                    b.Navigation("PolizaEntity");
+                    b.Navigation("Polizas");
                 });
 
             modelBuilder.Entity("Common.Entities.PolizaEstadoEntity", b =>
                 {
-                    b.Navigation("PolizaEntity");
-                });
-
-            modelBuilder.Entity("Common.Entities.TipoPersonaEntity", b =>
-                {
-                    b.Navigation("Persona");
+                    b.Navigation("Polizas");
                 });
 
             modelBuilder.Entity("Common.Entities.TipoPolizaEntity", b =>
                 {
-                    b.Navigation("PolizaEntity");
+                    b.Navigation("Polizas");
                 });
 #pragma warning restore 612, 618
         }

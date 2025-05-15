@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.Entities
 {
-    [Table("TipoPersonaTable", Schema = "Persona")]
+    [Table("TipoPersonaTable", Schema = "PersonaSchema")]
     [Index(nameof(TipoPersona), IsUnique = false, Name = "TipoPersonaBusquedaIndex")]
     public class TipoPersonaEntity
     {

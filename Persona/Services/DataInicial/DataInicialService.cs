@@ -58,17 +58,19 @@ namespace Persona.Services.DataInicial
                     {
                         await dbContext.TipoPersona.AddRangeAsync(nuevosTipos);
 
-                        using var transaction = await dbContext.Database.BeginTransactionAsync();
-                        try
+                        using (var transaction = await dbContext.Database.BeginTransactionAsync())
                         {
-                            await dbContext.SaveChangesAsync();
-                            await transaction.CommitAsync();
-                        }
-                        catch (Exception ex)
-                        {
-                            await transaction.RollbackAsync();
-                            _logger.LogError("Error al guardar tipos de persona: {0}", ex.ToString());
-                            throw;
+                            try
+                            {
+                                await dbContext.SaveChangesAsync();
+                                await transaction.CommitAsync();
+                            }
+                            catch (Exception ex)
+                            {
+                                await transaction.RollbackAsync();
+                                _logger.LogError("Error al guardar tipos de persona: {0}", ex.ToString());
+                                throw;
+                            }
                         }
                     }
                     else

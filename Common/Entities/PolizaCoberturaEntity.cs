@@ -23,6 +23,6 @@ namespace Common.Entities
         [Comment("Indicador de borrado lógico")]
         public bool EstaEliminado { get; set; }
 
-        public virtual PolizaEntity? PolizaEntity { get; set; }
+        public virtual List<PolizaEntity>? Polizas { get; set; }
     }
 }

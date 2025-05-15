@@ -14,7 +14,7 @@ namespace Common.Entities
         [Key]
         [Column(Order = 1, TypeName = "UNIQUEIDENTIFIER")]
         [Comment("Identificador de la póliza")]
-        public Guid Id { get; private set; }
+        public Guid Id { get; private set; } = Guid.NewGuid();
 
         [Column(Order = 2, TypeName = "VARCHAR")]
         [StringLength(64)]
@@ -59,6 +59,7 @@ namespace Common.Entities
         [Comment("Identificador del estado de la póliza")]
         public Guid IdPolizaEstado { get; set; }
 
+        [ForeignKey(nameof(IdPolizaEstado))]
         public virtual PolizaEstadoEntity? PolizaEstado { get; set; }
 
         [Column(Order = 10, TypeName = "DECIMAL(18, 2)")]

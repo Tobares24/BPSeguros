@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Common.Entities
 {
-    [Table("PersonaTable", Schema = "Persona")]
+    [Table("PersonaTable", Schema = "PersonaSchema")]
     [Index(nameof(CedulaAsegurado), IsUnique = true, Name = "PersonaIndex")]
     [Index(nameof(IdTipoPersona), IsUnique = false, Name = "IdTipoPersonaIndex")]
     [Index(nameof(Nombre), IsUnique = false, Name = "NombreIndex")]

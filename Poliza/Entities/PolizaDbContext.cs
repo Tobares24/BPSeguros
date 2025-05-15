@@ -36,35 +36,27 @@ namespace Poliza.Entities
 
             modelBuilder.Entity<PolizaEntity>()
                 .HasOne(x => x.PolizaCobertura)
-                .WithOne(x => x.PolizaEntity)
-                .HasForeignKey<PolizaEntity>(x => x.IdCobertura)
+                .WithMany(x => x.Polizas)
+                .HasForeignKey(x => x.IdCobertura)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Poliza_PolizaCobertura");
 
             modelBuilder.Entity<PolizaEntity>()
                 .HasOne(x => x.TipoPoliza)
-                .WithOne(x => x.PolizaEntity)
-                .HasForeignKey<PolizaEntity>(x => x.IdTipoPoliza)
+                .WithMany(x => x.Polizas)
+                .HasForeignKey(x => x.IdTipoPoliza)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Poliza_TipoPoliza");
 
             modelBuilder.Entity<PolizaEntity>()
                 .HasOne(x => x.PolizaEstado)
-                .WithOne(x => x.PolizaEntity)
-                .HasForeignKey<PolizaEntity>(x => x.IdPolizaEstado)
+                .WithMany(x => x.Polizas)
+                .HasForeignKey(x => x.IdPolizaEstado)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_Poliza_PolizaEstado");
-
-            modelBuilder.Entity<PolizaEntity>()
-                .HasOne(x => x.Persona)
-                .WithMany(x => x.Polizas)   
-                .HasForeignKey(x => x.CedulaAsegurado)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction)
-                .HasConstraintName("FK_Poliza_Persona");
         }
 
         public DbSet<PolizaEntity> Poliza { get; set; }

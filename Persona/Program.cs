@@ -61,7 +61,7 @@ app.UseCors("*");
 app.UseAuthorization();
 app.MapControllers();
 
-_=Task.Run(async () =>
+_ = Task.Run(async () =>
 {
     DataInicialService service = app.Services.GetService<DataInicialService>()!;
     await service.CrearTipoPersonas();
