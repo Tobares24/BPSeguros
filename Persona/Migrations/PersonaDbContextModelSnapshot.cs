@@ -79,7 +79,7 @@ namespace Persona.Migrations
 
                     b.HasIndex(new[] { "SegundoApellido" }, "SegundoApellidoIndex");
 
-                    b.ToTable("PersonaTable", "Persona");
+                    b.ToTable("PersonaTable", "PersonaSchema");
                 });
 
             modelBuilder.Entity("Common.Entities.TipoPersonaEntity", b =>
@@ -106,7 +106,7 @@ namespace Persona.Migrations
 
                     b.HasIndex(new[] { "TipoPersona" }, "TipoPersonaBusquedaIndex");
 
-                    b.ToTable("TipoPersonaTable", "Persona");
+                    b.ToTable("TipoPersonaTable", "PersonaSchema");
                 });
 
             modelBuilder.Entity("Common.Entities.PersonaEntity", b =>

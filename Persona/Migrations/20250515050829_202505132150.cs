@@ -6,17 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persona.Migrations
 {
     /// <inheritdoc />
-    public partial class _202505132110 : Migration
+    public partial class _202505132150 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "Persona");
+                name: "PersonaSchema");
 
             migrationBuilder.CreateTable(
                 name: "TipoPersonaTable",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "UNIQUEIDENTIFIER", nullable: false, comment: "Identificador del catálogo de tipo de persona"),
@@ -30,7 +30,7 @@ namespace Persona.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PersonaTable",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 columns: table => new
                 {
                     CedulaAsegurado = table.Column<string>(type: "VARCHAR(64)", maxLength: 64, nullable: false, comment: "Cédula del asegurado de la persona"),
@@ -47,51 +47,51 @@ namespace Persona.Migrations
                     table.ForeignKey(
                         name: "FK_Persona_TipoPersona",
                         column: x => x.IdTipoPersona,
-                        principalSchema: "Persona",
+                        principalSchema: "PersonaSchema",
                         principalTable: "TipoPersonaTable",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "EstaEliminadoIndex",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 table: "PersonaTable",
                 column: "EstaEliminado");
 
             migrationBuilder.CreateIndex(
                 name: "IdTipoPersonaIndex",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 table: "PersonaTable",
                 column: "IdTipoPersona");
 
             migrationBuilder.CreateIndex(
                 name: "NombreIndex",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 table: "PersonaTable",
                 column: "Nombre");
 
             migrationBuilder.CreateIndex(
                 name: "PersonaIndex",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 table: "PersonaTable",
                 column: "CedulaAsegurado",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "PrimerApellidoIndex",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 table: "PersonaTable",
                 column: "PrimerApellido");
 
             migrationBuilder.CreateIndex(
                 name: "SegundoApellidoIndex",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 table: "PersonaTable",
                 column: "SegundoApellido");
 
             migrationBuilder.CreateIndex(
                 name: "TipoPersonaBusquedaIndex",
-                schema: "Persona",
+                schema: "PersonaSchema",
                 table: "TipoPersonaTable",
                 column: "TipoPersona");
         }
@@ -101,11 +101,11 @@ namespace Persona.Migrations
         {
             migrationBuilder.DropTable(
                 name: "PersonaTable",
-                schema: "Persona");
+                schema: "PersonaSchema");
 
             migrationBuilder.DropTable(
                 name: "TipoPersonaTable",
-                schema: "Persona");
+                schema: "PersonaSchema");
         }
     }
 }

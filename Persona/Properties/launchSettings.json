@@ -17,7 +17,8 @@
       "applicationUrl": "https://localhost:7257;http://localhost:5049",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SQL_SERVER_CONNECTION_STRING": "Server=localhost;Database=PersonaDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+        "SQL_SERVER_CONNECTION_STRING": "Server=localhost;Database=PersonaDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True",
+        "PERSONA_ENDPOINT": "https://localhost:7257"
       }
     }
   }

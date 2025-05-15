@@ -47,16 +47,6 @@ namespace Poliza.Services.DataInicial
             "En Revisión"
         };
 
-        private static readonly List<string> _periodosPredefinidos = new()
-        {
-            "Único",
-            "Mensual",
-            "Bimestral",
-            "Trimestral",
-            "Semestral",
-            "Anual"
-        };
-
         public DataInicialService(ILogger<DataInicialService> logger, DbContextFactoryService dbContextFactoryService)
         {
             _logger = logger;
@@ -73,9 +63,7 @@ namespace Poliza.Services.DataInicial
 
                 Task crearEstados = CrearEstadosPoliza();
 
-                Task crearPeriodos = CrearPeriodos();
-
-                await Task.WhenAll(crearTipoPoliza, crearCoberturas, crearEstados, crearPeriodos);
+                await Task.WhenAll(crearTipoPoliza, crearCoberturas, crearEstados);
             }
             catch (Exception ex)
             {
@@ -239,58 +227,6 @@ namespace Poliza.Services.DataInicial
             {
                 _logger.LogError("Excepción en CrearEstadosPoliza: {0}", ex.ToString());
                 throw;
-            }
-            finally
-            {
-                _logger.LogInformation("Fin de invocación del método {0}", $"{MethodBase.GetCurrentMethod()!.ReflectedType!.FullName}.{MethodBase.GetCurrentMethod()!.Name}");
-            }
-        }
-
-        public async Task CrearPeriodos()
-        {
-            try
-            {
-                _logger.LogInformation("Inicio de invocación del método {0}", $"{MethodBase.GetCurrentMethod()!.ReflectedType!.FullName}.{MethodBase.GetCurrentMethod()!.Name}");
-
-                using (var dbContext = _dbContextFactoryService.CreateDbContext<PolizaDbContext>())
-                {
-                    var existentes = dbContext.Set<PolizaPeriodoEntity>()
-                        .Where(p => _periodosPredefinidos.Contains(p.Descripcion!) && !p.EstaEliminado)
-                        .Select(p => p.Descripcion!)
-                        .ToHashSet();
-
-                    var nuevos = _periodosPredefinidos
-                        .Where(desc => !existentes.Contains(desc))
-                        .Select(desc => new PolizaPeriodoEntity
-                        {
-                            Descripcion = desc,
-                            EstaEliminado = false
-                        }).ToList();
-
-                    if (nuevos.Any())
-                    {
-                        dbContext.Set<PolizaPeriodoEntity>().AddRange(nuevos);
-
-                        using (var transaction = await dbContext.Database.BeginTransactionAsync())
-                        {
-                            try
-                            {
-                                await dbContext.SaveChangesAsync();
-                                await transaction.CommitAsync();
-                            }
-                            catch (Exception ex)
-                            {
-                                await transaction.RollbackAsync();
-                                _logger.LogError("Error al guardar los períodos: {0}", ex.ToString());
-                                throw;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Excepción en CrearPeriodos: {0}", ex.ToString());
             }
             finally
             {

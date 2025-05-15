@@ -47,7 +47,7 @@ namespace Persona.Services.ObtenerPorId
                         throw new BPSegurosException((int)HttpStatusCode.NotFound, "La persona no ha sido encontrada.");
                     }
 
-                    ObtenerPorIdResponseModel responseModel = new()
+                    Persona.Models.ObtenerPorId.ObtenerPorIdResponseModel responseModel = new()
                     {
                         CedulaAsegurado = personaEntity.CedulaAsegurado,
                         FechaNacimiento = personaEntity.FechaNacimiento,

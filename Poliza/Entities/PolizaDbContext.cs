@@ -63,6 +63,5 @@ namespace Poliza.Entities
         public DbSet<PolizaCoberturaEntity> PolizaCobertura { get; set; }
         public DbSet<TipoPolizaEntity> TipoPoliza { get; set; }
         public DbSet<PolizaEstadoEntity> PolizaEstado { get; set; }
-        public DbSet<PolizaPeriodoEntity> PolizaPeriodo { get; set; }
     }
 }

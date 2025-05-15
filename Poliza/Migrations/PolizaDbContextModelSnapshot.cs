@@ -75,7 +75,7 @@ namespace Poliza.Migrations
 
                     b.Property<bool>("EstaEliminado")
                         .HasColumnType("BIT")
-                        .HasColumnOrder(15)
+                        .HasColumnOrder(14)
                         .HasComment("Indicador de borrado lógico");
 
                     b.Property<DateTime>("FechaEmision")
@@ -93,15 +93,10 @@ namespace Poliza.Migrations
                         .HasColumnOrder(6)
                         .HasComment("Fecha de vencimiento de la póliza");
 
-                    b.Property<Guid>("IdCobertura")
+                    b.Property<Guid?>("IdCobertura")
                         .HasColumnType("UNIQUEIDENTIFIER")
                         .HasColumnOrder(8)
                         .HasComment("Coberturas de la póliza");
-
-                    b.Property<Guid>("IdPeriodo")
-                        .HasColumnType("UNIQUEIDENTIFIER")
-                        .HasColumnOrder(14)
-                        .HasComment("Periodo de la póliza");
 
                     b.Property<Guid>("IdPolizaEstado")
                         .HasColumnType("UNIQUEIDENTIFIER")
@@ -138,8 +133,6 @@ namespace Poliza.Migrations
                         .HasName("PK_Poliza_Id");
 
                     b.HasIndex("IdCobertura");
-
-                    b.HasIndex("IdPeriodo");
 
                     b.HasIndex("IdPolizaEstado");
 
@@ -186,37 +179,6 @@ namespace Poliza.Migrations
                     b.ToTable("PolizaEstadoTable", "PolizaSchema");
                 });
 
-            modelBuilder.Entity("Common.Entities.PolizaPeriodoEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("UNIQUEIDENTIFIER")
-                        .HasColumnOrder(1)
-                        .HasComment("Identificador del periodo de póliza");
-
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(128)
-                        .HasColumnType("VARCHAR")
-                        .HasColumnOrder(2)
-                        .HasComment("Descripción del periodo de póliza");
-
-                    b.Property<bool>("EstaEliminado")
-                        .HasColumnType("BIT")
-                        .HasColumnOrder(3)
-                        .HasComment("Indicador de borrado lógico");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Descripcion", "EstaEliminado" }, "PolizaPeriodoBusquedaIndex")
-                        .IsUnique()
-                        .HasFilter("[Descripcion] IS NOT NULL");
-
-                    b.HasIndex(new[] { "Id" }, "PolizaPeriodoIndex")
-                        .IsUnique();
-
-                    b.ToTable("PolizaPeriodo", "PolizaSchema");
-                });
-
             modelBuilder.Entity("Common.Entities.TipoPolizaEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -256,12 +218,6 @@ namespace Poliza.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_Poliza_PolizaCobertura");
 
-                    b.HasOne("Common.Entities.PolizaPeriodoEntity", "PolizaPeriodo")
-                        .WithMany("Polizas")
-                        .HasForeignKey("IdPeriodo")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Common.Entities.PolizaEstadoEntity", "PolizaEstado")
                         .WithMany("Polizas")
                         .HasForeignKey("IdPolizaEstado")
@@ -278,8 +234,6 @@ namespace Poliza.Migrations
 
                     b.Navigation("PolizaEstado");
 
-                    b.Navigation("PolizaPeriodo");
-
                     b.Navigation("TipoPoliza");
                 });
 
@@ -289,11 +243,6 @@ namespace Poliza.Migrations
                 });
 
             modelBuilder.Entity("Common.Entities.PolizaEstadoEntity", b =>
-                {
-                    b.Navigation("Polizas");
-                });
-
-            modelBuilder.Entity("Common.Entities.PolizaPeriodoEntity", b =>
                 {
                     b.Navigation("Polizas");
                 });

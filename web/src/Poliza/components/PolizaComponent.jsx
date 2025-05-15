@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AlertaService } from "../../Services/AlertaService";
 import { FormularioPolizaComponent } from "./FormularioPolizaComponent";
+import { ModalComponent } from "../../components/ModalComponent";
 
 export const PolizaComponent = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -30,8 +31,11 @@ export const PolizaComponent = () => {
 
   return (
     <>
+      <button className="btn btn-primary" onClick={() => setMostrarModal(true)}>
+        Crear
+      </button>
       {mostrarModal && (
-        <ModalComponent title={"Formulario Persona"} onCancel={onCancelar}>
+        <ModalComponent title={"Formulario Póliza"} onCancel={onCancelar} tamnnioModal="modal-xl">
           <FormularioPolizaComponent
             onCancel={() => setMostrarModal(false)}
             setRefrescarTabla={setRefrescarTabla}

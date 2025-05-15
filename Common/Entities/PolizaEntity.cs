@@ -50,7 +50,7 @@ namespace Common.Entities
 
         [Column(Order = 8, TypeName = "UNIQUEIDENTIFIER")]
         [Comment("Coberturas de la póliza")]
-        public Guid IdCobertura { get; set; }
+        public Guid? IdCobertura { get; set; }
 
         [ForeignKey(nameof(IdCobertura))]
         public virtual PolizaCoberturaEntity? PolizaCobertura { get; set; }
@@ -79,14 +79,7 @@ namespace Common.Entities
         [Comment("Nombre de la aseguradora")]
         public string? Aseguradora { get; set; }
 
-        [Column(Order = 14, TypeName = "UNIQUEIDENTIFIER")]
-        [Comment("Periodo de la póliza")]
-        public Guid IdPeriodo { get; set; }
-
-        [ForeignKey(nameof(IdPeriodo))]
-        public virtual PolizaPeriodoEntity? PolizaPeriodo { get; set; }
-
-        [Column(Order = 15, TypeName = "BIT")]
+        [Column(Order = 14, TypeName = "BIT")]
         [Comment("Indicador de borrado lógico")]
         public bool EstaEliminado { get; set; }
     }

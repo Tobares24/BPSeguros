@@ -3,6 +3,26 @@ import { AlertaService } from "./AlertaService";
 import ResponseService from "./ResponseService ";
 
 export default class PolizaService {
+  async crear(modelo) {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      const response = await fetch(`${API_POLIZA}`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(modelo),
+        headers,
+      });
+
+      await ResponseService.handleNoContent(response);
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+      throw error;
+    }
+  }
+
   async listaSelectorTipoPoliza(filtroBusqueda) {
     try {
       const headers = {

@@ -15,6 +15,11 @@ namespace Common.Services
             _logger = logger;
         }
 
+        public T ConvertToObject<T>(string json)
+        {
+            return JsonSerializer.Deserialize<T>(json)!;
+        }
+
         public async Task<T> RequestToObjectAsync<T>(HttpContext httpContext)
         {
             try

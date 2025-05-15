@@ -6,10 +6,13 @@ import { InputComponent } from "../../components/InputComponent";
 import { SelectorTipoPolizaComponent } from "./SelectorTipoPolizaComponent";
 import { SelectorCoberturaComponent } from "./SelectorCoberturaComponent";
 import { SelectorEstadoComponent } from "./SelectorEstadoComponent";
-import { SelectorPeriodoComponent } from "./SelectorPeriodoComponent";
 import { SelectorPersonaComponent } from "../../Persona/components/SelectorPersonaComponent";
 import { InputNumericComponent } from "../../components/InputNumericComponent";
 import { AlertaService } from "../../Services/AlertaService";
+import { formatearFechaGuardar } from "../../utils/FormateadorFecha";
+import PolizaService from "../../Services/PolizaService";
+import { DatePickerComponent } from "../../components/DatePickerComponent";
+import { ButtonComponent } from "../../components/ButtonComponent";
 
 const initialForm = {
   numeroPoliza: "",
@@ -24,7 +27,6 @@ const initialForm = {
   periodo: "",
   fechaInclusion: "",
   aseguradora: "",
-  idPeriodo: "",
 };
 
 const initialValidateModel = {
@@ -66,6 +68,38 @@ export const FormularioPolizaComponent = ({
     setValidateModel,
   } = useForm(initialForm, initialValidateModel, initialErrorModel);
 
+  const polizaService = new PolizaService();
+
+  const crearPoliza = async () => {
+    setCargando(true);
+    try {
+      const fechaEmision = formatearFechaGuardar(formState.fechaEmision);
+      const fechaInclusion = formatearFechaGuardar(formState.fechaInclusion);
+      const fechaVencimiento = formatearFechaGuardar(
+        formState.fechaVencimiento
+      );
+      const periodo = formatearFechaGuardar(formState.periodo);
+
+      const nuevoObjeto = {
+        ...formState,
+        fechaEmision,
+        fechaInclusion,
+        fechaVencimiento,
+        periodo,
+      };
+
+      await polizaService.crear(nuevoObjeto);
+
+      setRefrescarTabla(true);
+      setState();
+      AlertaService.success("Exitoso", "La póliza ha sido creada con éxito.");
+    } catch (error) {
+      AlertaService.error("Error", `${error?.message}`);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   const setState = () => {
     onResetForm();
     onCancel(true);
@@ -84,6 +118,7 @@ export const FormularioPolizaComponent = ({
       async (respuesta) => {
         if (respuesta) {
           if (tipoAccion === ACCION_CREAR) {
+            await crearPoliza();
           } else if (tipoAccion === ACCION_MODIFICAR) {
           }
         }
@@ -110,18 +145,6 @@ export const FormularioPolizaComponent = ({
       <SpinnerComponent show={cargando} />
       <FormularioComponent>
         <div className="col-6">
-          <InputComponent
-            label={"Número Póliza"}
-            name={"numeroPoliza"}
-            onChange={onInputChange}
-            placeholder={"Número Póliza"}
-            value={formState.numeroPoliza}
-            requerido={true}
-            error={errorModel.numeroPoliza}
-            deshabilitar={deshabilitar}
-          />
-        </div>
-        <div className="col-6">
           <SelectorTipoPolizaComponent
             isRequired={true}
             nameTipoPoliza="idTipoPoliza"
@@ -138,6 +161,18 @@ export const FormularioPolizaComponent = ({
             setValorSeleccionado={setFormState}
             valorSeleccionado={formState.cedulaAsegurado}
             error={errorModel.cedulaAsegurado}
+            deshabilitar={deshabilitar}
+          />
+        </div>
+        <div className="col-6">
+          <InputComponent
+            label={"Número Póliza"}
+            name={"numeroPoliza"}
+            onChange={onInputChange}
+            placeholder={"Número Póliza"}
+            value={formState.numeroPoliza}
+            requerido={true}
+            error={errorModel.numeroPoliza}
             deshabilitar={deshabilitar}
           />
         </div>
@@ -198,13 +233,11 @@ export const FormularioPolizaComponent = ({
           />
         </div>
         <div className="col-6">
-          <SelectorPeriodoComponent
-            isRequired={true}
-            nameTipoPoliza="idPeriodo"
-            setValorSeleccionado={setFormState}
-            valorSeleccionado={formState.idPeriodo}
-            error={errorModel.idPeriodo}
-            deshabilitar={deshabilitar}
+          <DatePickerComponent
+            label="Periodo"
+            value={formState.periodo}
+            onChange={onInputChange}
+            name={"periodo"}
           />
         </div>
         <div className="col-6">

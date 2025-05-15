@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Poliza.Services;
 using Poliza.Services.ListaSelectorPolizaCobertura;
 using Poliza.Services.ListaSelectorPolizaEstado;
-using Poliza.Services.ListaSelectorPolizaPeriodo;
 using Poliza.Services.ListaSelectorTipoPoliza;
 
 namespace Poliza.Controllers
@@ -10,16 +10,16 @@ namespace Poliza.Controllers
     [ApiController]
     public class PolizaController : ControllerBase
     {
-        [HttpGet("select-estado/{filtro}")]
+        [HttpPost]
+        public async Task<IActionResult> CrearPoliza([FromServices] CrearPolizaService service) => await service.CrearPoliza(HttpContext);
+
+        [HttpGet("select-estado")]
         public async Task<IActionResult> ListaSelectorPolizaEstado([FromServices] ListaSelectorPolizaEstadoService service) => await service.ListaSelectorPolizaEstado(HttpContext);
 
-        [HttpGet("select-cobertura/{filtro}")]
+        [HttpGet("select-cobertura")]
         public async Task<IActionResult> ListaSelectorPolizaCobertura([FromServices] ListaSelectorPolizaCoberturaService service) => await service.ListaSelectorPolizaCobertura(HttpContext);
 
-        [HttpGet("select-tipo-poliza/{filtro}")]
+        [HttpGet("select-tipo-poliza")]
         public async Task<IActionResult> ListaSelectorTipoPoliza([FromServices] ListaSelectorTipoPolizaService service) => await service.ListaSelectorTipoPoliza(HttpContext);
-
-        [HttpGet("select-periodo/{filtro}")]
-        public async Task<IActionResult> ListaSelectorPolizaPeriodo([FromServices] ListaSelectorPolizaPeriodoService service) => await service.ListaSelectorPolizaPeriodo(HttpContext);
     }
 }

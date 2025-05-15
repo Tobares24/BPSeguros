@@ -12,8 +12,8 @@ using Persona.Entities;
 namespace Persona.Migrations
 {
     [DbContext(typeof(PersonaDbContext))]
-    [Migration("20250514232810_202505132110")]
-    partial class _202505132110
+    [Migration("20250515050829_202505132150")]
+    partial class _202505132150
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,7 +82,7 @@ namespace Persona.Migrations
 
                     b.HasIndex(new[] { "SegundoApellido" }, "SegundoApellidoIndex");
 
-                    b.ToTable("PersonaTable", "Persona");
+                    b.ToTable("PersonaTable", "PersonaSchema");
                 });
 
             modelBuilder.Entity("Common.Entities.TipoPersonaEntity", b =>
@@ -109,7 +109,7 @@ namespace Persona.Migrations
 
                     b.HasIndex(new[] { "TipoPersona" }, "TipoPersonaBusquedaIndex");
 
-                    b.ToTable("TipoPersonaTable", "Persona");
+                    b.ToTable("TipoPersonaTable", "PersonaSchema");
                 });
 
             modelBuilder.Entity("Common.Entities.PersonaEntity", b =>

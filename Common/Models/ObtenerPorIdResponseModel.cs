@@ -1,4 +1,4 @@
-﻿namespace Persona.Models.ObtenerPorId
+﻿namespace Common.Models
 {
     public class ObtenerPorIdResponseModel
     {

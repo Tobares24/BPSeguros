@@ -1,13 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
 import { AlertaService } from "../../Services/AlertaService";
 import { SelectorComponent } from "../../components/SelectorComponent";
-import { useEffect, useState } from "react";
 import PersonaService from "../../Services/PersonaService";
 
 export const SelectorPersonaComponent = ({
-  valorSeleccionado = "",
-  setValorSeleccionado = () => {},
+  isRequired = false,
+  label = "Personas",
   namePersona = "",
+  setValorSeleccionado = () => {},
+  valorSeleccionado = "",
+  error = "",
+  deshabilitar = false,
 }) => {
   const [filtro, setFiltro] = useState(valorSeleccionado);
   const [personas, setPersonas] = useState([]);
@@ -19,7 +23,18 @@ export const SelectorPersonaComponent = ({
     setCargando(true);
     try {
       const data = await personaService.listaSelectorPersona(filtro);
-      setPersonas(data);
+
+      const datosTransformados = transformarDatos(data);
+
+      const nuevosDatos = [
+        {
+          value: "null",
+          label: "Seleccione",
+        },
+        ...datosTransformados,
+      ];
+
+      setPersonas(nuevosDatos);
     } catch (e) {
       AlertaService.error(
         "Error",
@@ -28,6 +43,21 @@ export const SelectorPersonaComponent = ({
     } finally {
       setCargando(false);
     }
+  };
+
+  const transformarDatos = (datos) => {
+    let nuevosDatos = [];
+
+    datos?.map((item) => {
+      const nuevosRegistros = {
+        value: item?.cedulaAsegurado,
+        label: `${item?.cedulaAsegurado} - ${item?.nombre} ${item?.primerApellido} ${item?.segundoApellido}`,
+      };
+
+      nuevosDatos.push(nuevosRegistros);
+    });
+
+    return nuevosDatos;
   };
 
   const handleSelect = (selected) => {
@@ -43,7 +73,6 @@ export const SelectorPersonaComponent = ({
 
   return (
     <div>
-      <label>Personas</label>
       <SelectorComponent
         options={personas}
         loading={cargando}
@@ -51,6 +80,10 @@ export const SelectorPersonaComponent = ({
         value={filtro}
         onSelect={handleSelect}
         placeholder="Buscar"
+        label={label}
+        deshabilitar={deshabilitar}
+        error={error}
+        isRequired={isRequired}
       />
     </div>
   );
