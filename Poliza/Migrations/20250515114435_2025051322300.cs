@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Poliza.Migrations
 {
     /// <inheritdoc />
-    public partial class _202505132130 : Migration
+    public partial class _2025051322300 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,18 +62,18 @@ namespace Poliza.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "UNIQUEIDENTIFIER", nullable: false, comment: "Identificador de la póliza"),
-                    NumeroPoliza = table.Column<string>(type: "VARCHAR(64)", maxLength: 64, nullable: true, comment: "Número de póliza"),
+                    NumeroPoliza = table.Column<string>(type: "VARCHAR(128)", maxLength: 128, nullable: true, comment: "Número de póliza"),
                     IdTipoPoliza = table.Column<Guid>(type: "UNIQUEIDENTIFIER", nullable: false, comment: "Identificador del tipo de póliza"),
-                    CedulaAsegurado = table.Column<string>(type: "VARCHAR", nullable: true, comment: "Cédula del asegurado"),
-                    MontoAsegurado = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false, comment: "Monto asegurado"),
+                    CedulaAsegurado = table.Column<string>(type: "VARCHAR(64)", maxLength: 64, nullable: true, comment: "Cédula del asegurado"),
+                    MontoAsegurado = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: true, comment: "Monto asegurado"),
                     FechaVencimiento = table.Column<DateTime>(type: "DATETIME", nullable: false, comment: "Fecha de vencimiento de la póliza"),
-                    FechaEmision = table.Column<DateTime>(type: "DATETIME", nullable: false, comment: "Fecha de emisión de la póliza"),
+                    FechaEmision = table.Column<DateTime>(type: "DATETIME", nullable: true, comment: "Fecha de emisión de la póliza"),
                     IdCobertura = table.Column<Guid>(type: "UNIQUEIDENTIFIER", nullable: true, comment: "Coberturas de la póliza"),
                     IdPolizaEstado = table.Column<Guid>(type: "UNIQUEIDENTIFIER", nullable: false, comment: "Identificador del estado de la póliza"),
-                    Prima = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false, comment: "Prima de la póliza"),
-                    Periodo = table.Column<DateTime>(type: "DATETIME", nullable: false, comment: "Periodo de cobertura de la póliza"),
-                    FechaInclusion = table.Column<DateTime>(type: "DATETIME", nullable: false, comment: "Fecha de inclusión de la póliza"),
-                    Aseguradora = table.Column<string>(type: "VARCHAR(150)", maxLength: 150, nullable: true, comment: "Nombre de la aseguradora"),
+                    Prima = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: true, comment: "Prima de la póliza"),
+                    Periodo = table.Column<DateTime>(type: "DATETIME", nullable: true, comment: "Periodo de cobertura de la póliza"),
+                    FechaInclusion = table.Column<DateTime>(type: "DATETIME", nullable: true, comment: "Fecha de inclusión de la póliza"),
+                    Aseguradora = table.Column<string>(type: "VARCHAR(128)", maxLength: 128, nullable: true, comment: "Nombre de la aseguradora"),
                     EstaEliminado = table.Column<bool>(type: "BIT", nullable: false, comment: "Indicador de borrado lógico")
                 },
                 constraints: table =>

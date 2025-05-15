@@ -12,8 +12,8 @@ using Persona.Entities;
 namespace Persona.Migrations
 {
     [DbContext(typeof(PersonaDbContext))]
-    [Migration("20250515050829_202505132150")]
-    partial class _202505132150
+    [Migration("20250515114256_2025051322250")]
+    partial class _2025051322250
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

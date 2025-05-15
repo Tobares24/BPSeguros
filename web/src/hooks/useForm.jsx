@@ -12,16 +12,17 @@ export const useForm = (
   const onInputChange = ({ target }) => {
     const { name, value } = target;
 
-    setErrorModel((prevData) => ({
-      ...prevData,
-      [name]: value.length === 0,
-    }));
+    if (initialValidateModel[name]) {
+      setErrorModel((prevData) => ({
+        ...prevData,
+        [name]: value.length === 0,
+      }));
 
-    setValidateModel((prevData) => ({
-      ...prevData,
-      [name]: value.length > 0 ? "" : "Campo Requerido",
-    }));
-
+      setValidateModel((prevData) => ({
+        ...prevData,
+        [name]: value.length > 0 ? "" : "Campo Requerido",
+      }));
+    }
     setFormState({
       ...formState,
       [name]: value,
@@ -38,7 +39,11 @@ export const useForm = (
     let tieneCamposValidos = false;
 
     Object.keys(validateModel).map((clave) => {
-      if (!formState[clave] || formState[clave]?.length === 0 || formState[clave] === "null") {
+      if (
+        !formState[clave] ||
+        formState[clave]?.length === 0 ||
+        formState[clave] === "null"
+      ) {
         validateModel[clave] = true;
 
         errorModel[clave] = "Campo Requerido";

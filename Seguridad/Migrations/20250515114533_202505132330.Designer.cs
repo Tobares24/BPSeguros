@@ -12,8 +12,8 @@ using Seguridad.Entities;
 namespace Seguridad.Migrations
 {
     [DbContext(typeof(SeguridadDbContext))]
-    [Migration("20250515093143_202505132150")]
-    partial class _202505132150
+    [Migration("20250515114533_202505132330")]
+    partial class _202505132330
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,7 +38,8 @@ namespace Seguridad.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
 
                     b.HasKey("Id")
                         .HasName("PK_Usuario_Id");

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AlertaService } from "../../Services/AlertaService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SpinnerComponent } from "../../components/SpinnerComponent";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SeguridadService from "../../Services/SeguridadService";
@@ -21,12 +21,14 @@ export const RegistrarComponent = () => {
 
   const seguridadService = new SeguridadService();
 
+  const navigate = useNavigate();
+
   const crearUsuario = async () => {
     setCargando(true);
     try {
       await seguridadService.crear(modelo);
       AlertaService.success("Exitoso", "Usuario creado con éxito");
-      window.location("/login");
+      navigate("/login");
     } catch (error) {
       AlertaService.error("Error", `${error?.message}`);
     } finally {

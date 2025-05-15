@@ -144,7 +144,7 @@ export const IniciarSesionComponent = () => {
             Iniciar sesión
           </button>
           <div className="mt-3 text-center">
-            <Link to="/login" className="text-decoration-none">
+            <Link to="/registro" className="text-decoration-none">
               ¿No tienes cuenta? Regístrate aquí
             </Link>
           </div>

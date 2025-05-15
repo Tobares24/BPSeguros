@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persona.Migrations
 {
     /// <inheritdoc />
-    public partial class _202505132150 : Migration
+    public partial class _2025051322250 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

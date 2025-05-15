@@ -179,7 +179,7 @@ export const FormularioPolizaComponent = ({
   };
 
   const onSetRequeridos = (name) => {
-    if (formState[name]) {
+    if (initialValidateModel[name]) {
       setValidateModel((prevData) => ({
         ...prevData,
         [name]: false,
